@@ -1,0 +1,42 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /vg/v1
+
+spring:
+  application:
+    name: v-vainglory
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      url: jdbc:postgresql://localhost:5432/lid
+      driver-class-name: org.postgresql.Driver
+      username: postgres
+      password: ""
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      max-wait: 60000
+      test-while-idle: true
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 30000
+      validation-query: select 1
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: false
+      max-pool-prepared-statement-per-connection-size: -1
+      use-global-data-source-stat: true
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  global-config:
+    db-config:
+      table-prefix: t_
+      schema: public
+      logic-delete-field: deleted
+  type-aliases-package: com.vainglory.pojo
+
+
+debug: true
