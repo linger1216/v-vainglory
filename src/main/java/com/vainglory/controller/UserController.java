@@ -1,16 +1,12 @@
 package com.vainglory.controller;
 
 import com.vainglory.pojo.dto.CreateUserReq;
-import com.vainglory.common.R;
 import com.vainglory.pojo.User;
 import com.vainglory.service.IUserService;
-import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @RestController
 @RequestMapping("/user")
@@ -25,7 +21,7 @@ public class UserController {
   @PostMapping
   public User create(@Validated @RequestBody CreateUserReq req) {
     User user = modelMapper.map(req, User.class);
-    userService.save(user);
+//    userService.save(user);
     return user;
   }
 

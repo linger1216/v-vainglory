@@ -1,13 +1,19 @@
 package com.vainglory.common;
 
-import org.springframework.http.HttpStatus;
+import lombok.Data;
 
-public class R {
+/*
+  统一返回值
+ */
+
+
+@Data
+public class R<T> {
   private Integer code;
   private String msg;
-  private Object data;
+  private T data;
 
-  public R(int code, String msg, Object data) {
+  public R(int code, String msg, T data) {
     this.code = code;
     this.msg = msg;
     this.data = data;
@@ -18,17 +24,25 @@ public class R {
     this.msg = msg;
   }
 
-  public static R OK(Object data) {
-    return new R(HttpStatus.OK.value(), "success", data);
+  public static <T> R<T> OK(T data) {
+    return new R<>(Constants.R_CODE_SUCCESS, "success", data);
   }
-  public static R OK() {
-    return new R(HttpStatus.OK.value(), "success");
+  public static <T> R<T> OK() {
+    return new R<>(Constants.R_CODE_SUCCESS, "success");
   }
 
-  public static R F(Integer code, String msg) {
-    return new R(code, msg);
+  public static <T> R<T> F(ResponseEnum e) {
+    return new R<>(e.getCode(), e.getMsg());
   }
-  public static R Err(String msg) {
-    return new R(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg);
+
+  public static <T> R<T> F(ResponseEnum e, String msg) {
+    return new R<>(e.getCode(), msg);
+  }
+
+  public static <T> R<T> F(Integer code, String msg) {
+    return new R<>(code, msg);
+  }
+  public static <T> R<T> F(String msg) {
+    return new R<>(Constants.R_CODE_FAILED, msg);
   }
 }
