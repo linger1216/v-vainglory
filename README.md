@@ -25,6 +25,18 @@ lombok的问题，特么最终要加这个 f**
 ```
 
 
+增加了数据库初始化
+sql:
+init:
+encoding: utf-8
+mode: always
+platform: auto
+schema-locations:
+- classpath:db/schema-user.sql
+data-locations:
+- classpath:db/data-user.sql
+
+
 package com.vainglory.advice;
 
 import com.vainglory.common.R;

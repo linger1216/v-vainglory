@@ -6,8 +6,8 @@ server:
     uri-encoding: UTF-8
 
 spring:
-  application:
-    name: v-vainglory
+  profiles:
+    active: dev
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
@@ -23,11 +23,19 @@ spring:
       max-file-size: 30MB
       max-request-size: 30MB
       enabled: true
-  profiles:
-    active: dev
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+  sql:
+    init:
+      encoding: utf-8
+      mode: always
+      platform: postgresql
+      schema-locations:
+      - classpath:db/${spring.sql.init.platform}/schema-user.sql
+      - classpath:db/${spring.sql.init.platform}/schema-dept.sql
+      data-locations:
+      - classpath:db/${spring.sql.init.platform}/data-user.sql
 
 mybatis-plus:
   configuration:
