@@ -3,11 +3,15 @@ package com.vainglory.controller;
 import com.vainglory.pojo.dto.CreateUserReq;
 import com.vainglory.pojo.User;
 import com.vainglory.service.IUserService;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+@Slf4j
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -21,7 +25,10 @@ public class UserController {
   @PostMapping
   public User create(@Validated @RequestBody CreateUserReq req) {
     User user = modelMapper.map(req, User.class);
-//    userService.save(user);
+    boolean result = userService.save(user);
+    if (!result) {
+      log.debug("创建用户失败");
+    }
     return user;
   }
 
@@ -38,8 +45,8 @@ public class UserController {
   }
 
   @GetMapping
-  public String get() {
-    userService.getById(1);
-    return "success";
+  public List<User> get() {
+    List<User> users = userService.list();
+    return users;
   }
 }

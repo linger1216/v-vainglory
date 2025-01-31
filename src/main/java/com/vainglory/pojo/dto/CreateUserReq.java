@@ -1,10 +1,8 @@
 package com.vainglory.pojo.dto;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 public class CreateUserReq extends BaseDto{

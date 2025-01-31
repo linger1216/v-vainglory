@@ -3,8 +3,10 @@ package com.vainglory;
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.DataPermissionInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import com.vainglory.common.StatusInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -30,6 +32,11 @@ public class VaingloryApplication {
 
     // 防止全表更新与删除
     interceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
+
+    //
+    interceptor.addInnerInterceptor(new DataPermissionInterceptor());
+
+    interceptor.addInnerInterceptor(new StatusInterceptor());
     return interceptor;
   }
 

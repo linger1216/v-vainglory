@@ -29,6 +29,13 @@
       <version>3.2.2</version>
     </dependency>
 
+    <!-- 反射包，用于修改一些只读的东西，用在了拦截器去修改sql -->
+    <dependency>
+      <groupId>cn.hutool</groupId>
+      <artifactId>hutool-all</artifactId>
+      <version>5.8.35</version>
+    </dependency>
+
 
     <dependency>
       <groupId>org.springframework.boot</groupId>

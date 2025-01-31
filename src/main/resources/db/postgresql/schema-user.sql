@@ -12,7 +12,7 @@
  Target Server Version : 160004 (160004)
  File Encoding         : 65001
 
- Date: 28/01/2025 15:22:03
+ Date: 29/01/2025 23:34:46
 */
 
 
@@ -21,25 +21,25 @@
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."t_user";
 CREATE TABLE "public"."t_user" (
-                                   "id" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
-                                   "avatar" varchar(255) COLLATE "pg_catalog"."default",
-                                   "nickname" varchar(255) COLLATE "pg_catalog"."default",
-                                   "username" varchar(255) COLLATE "pg_catalog"."default",
-                                   "password" varchar(255) COLLATE "pg_catalog"."default",
-                                   "salt" varchar(255) COLLATE "pg_catalog"."default",
-                                   "email" varchar(255) COLLATE "pg_catalog"."default",
-                                   "phone" varchar(255) COLLATE "pg_catalog"."default",
-                                   "address" varchar(255) COLLATE "pg_catalog"."default",
-                                   "dept_id" varchar(255) COLLATE "pg_catalog"."default",
-                                   "role_id" varchar(255) COLLATE "pg_catalog"."default",
-                                   "post_id" varchar(255) COLLATE "pg_catalog"."default",
+                                   "id" text COLLATE "pg_catalog"."default" NOT NULL,
+                                   "avatar" text COLLATE "pg_catalog"."default",
+                                   "nickname" text COLLATE "pg_catalog"."default",
+                                   "username" text COLLATE "pg_catalog"."default",
+                                   "password" text COLLATE "pg_catalog"."default",
+                                   "salt" text COLLATE "pg_catalog"."default",
+                                   "email" text COLLATE "pg_catalog"."default",
+                                   "phone" text COLLATE "pg_catalog"."default",
+                                   "address" text COLLATE "pg_catalog"."default",
+                                   "dept_id" text COLLATE "pg_catalog"."default",
+                                   "role_id" text COLLATE "pg_catalog"."default",
+                                   "post_id" text COLLATE "pg_catalog"."default",
                                    "status" int2,
-                                   "created_by" varchar(255) COLLATE "pg_catalog"."default",
-                                   "updated_by" varchar(255) COLLATE "pg_catalog"."default",
+                                   "create_by" text COLLATE "pg_catalog"."default",
+                                   "update_by" text COLLATE "pg_catalog"."default",
                                    "version" int4,
-                                   "created_at" timestamptz(6),
-                                   "updated_at" timestamptz(6),
-                                   "deleted_at" timestamptz(6)
+                                   "create_time" timestamptz(6),
+                                   "update_time" timestamptz(6),
+                                   "delete_time" timestamptz(6)
 )
 ;
 ALTER TABLE "public"."t_user" OWNER TO "postgres";
@@ -56,12 +56,12 @@ COMMENT ON COLUMN "public"."t_user"."dept_id" IS '部门id';
 COMMENT ON COLUMN "public"."t_user"."role_id" IS '角色id';
 COMMENT ON COLUMN "public"."t_user"."post_id" IS '岗位id';
 COMMENT ON COLUMN "public"."t_user"."status" IS '状态: 1正常 2禁用';
-COMMENT ON COLUMN "public"."t_user"."created_by" IS '创建者';
-COMMENT ON COLUMN "public"."t_user"."updated_by" IS '更新者';
+COMMENT ON COLUMN "public"."t_user"."create_by" IS '创建者';
+COMMENT ON COLUMN "public"."t_user"."update_by" IS '更新者';
 COMMENT ON COLUMN "public"."t_user"."version" IS '版本';
-COMMENT ON COLUMN "public"."t_user"."created_at" IS '创建时间';
-COMMENT ON COLUMN "public"."t_user"."updated_at" IS '更新时间';
-COMMENT ON COLUMN "public"."t_user"."deleted_at" IS '删除时间';
+COMMENT ON COLUMN "public"."t_user"."create_time" IS '创建时间';
+COMMENT ON COLUMN "public"."t_user"."update_time" IS '更新时间';
+COMMENT ON COLUMN "public"."t_user"."delete_time" IS '删除时间';
 
 -- ----------------------------
 -- Primary Key structure for table t_user

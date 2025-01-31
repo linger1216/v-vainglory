@@ -33,7 +33,6 @@ spring:
       platform: postgresql
       schema-locations:
       - classpath:db/${spring.sql.init.platform}/schema-user.sql
-      - classpath:db/${spring.sql.init.platform}/schema-dept.sql
       data-locations:
       - classpath:db/${spring.sql.init.platform}/data-user.sql
 
@@ -41,12 +40,12 @@ mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
     cache-enabled: false
-    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     db-config:
       table-prefix: t_
       schema: public
-      logic-delete-field: deleted_at
+      logic-delete-field: delete_time
       logic-delete-value: 'now()'
       logic-not-delete-value: 'null'
   type-aliases-package: com.vainglory.pojo

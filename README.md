@@ -4,7 +4,10 @@
 - deletedAt，可以调整为时间
 - dto转pojo，有个东西叫ModelMapper
 
+时间戳
+https://www.cnblogs.com/hxysg/p/17772275.html
 
+table-prefix TableName的坑
 
 lombok的问题，特么最终要加这个 f**
 ```
