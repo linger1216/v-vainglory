@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.core.plugins.InterceptorIgnoreHelper;
 import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
 import com.baomidou.mybatisplus.extension.parser.JsqlParserSupport;
 import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
+import com.vainglory.annotation.StatusNoneControl;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.HexValue;
 import net.sf.jsqlparser.expression.LongValue;
@@ -34,6 +35,7 @@ import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
@@ -55,63 +57,92 @@ public class StatusInterceptor extends JsqlParserSupport implements InnerInterce
 
   public void beforeQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds,
                           ResultHandler resultHandler, BoundSql boundSql) {
-
     if (InterceptorIgnoreHelper.willIgnoreDataPermission(ms.getId())) {
       return;
     }
 
-    // 通过检查StatusConditionHelper的状态，如果不需要跳过
-    if (!StatusConditionHelper.isSkipStatusCondition()) {
-
-      PluginUtils.MPBoundSql mpBs = PluginUtils.mpBoundSql(boundSql);
-
-      // 处理sql
-      mpBs.sql(parserSingle(mpBs.sql(), ms.getId()));
-
-      // 获取SQL语句
-//      String sql = boundSql.getSql().trim();
-//      // 检查是否是SELECT查询
-//      if (ms.getSqlCommandType() == SqlCommandType.SELECT) {
-//        // 获取SQL语句的元对象
-//        MetaObject metaObject = SystemMetaObject.forObject(boundSql);
-//        // 构建新的SQL语句，添加status=1的过滤条件
-//        String newSql = sql + " AND status=1";
-//        // 设置新的SQL语句
-//        metaObject.setValue("sql", newSql);
-//      }
+    // 不需要进行状态处理
+    if (StatusConditionHelper.isSkipStatusCondition()) {
+      return;
     }
+
+    // 处理sql
+    PluginUtils.MPBoundSql mpBs = PluginUtils.mpBoundSql(boundSql);
+    mpBs.sql(parserSingle(mpBs.sql(), ms.getId()));
   }
 
 
   @Override
   protected void processSelect(Select select, int index, String sql, Object obj) {
+    String mappedStatementId = String.valueOf(obj);
     if (select instanceof PlainSelect) {
-      setWhere((PlainSelect) select, "status");
-    } else if (select instanceof SetOperationList) {
-      SetOperationList setOperationList = (SetOperationList) select;
+      setWhere((PlainSelect) select, mappedStatementId);
+    } else if (select instanceof SetOperationList setOperationList) {
       List<Select> selects = setOperationList.getSelects();
       for (Select s : selects) {
-        setWhere((PlainSelect) s, "status");
+        setWhere((PlainSelect) s, mappedStatementId);
       }
     }
   }
 
-  private void setWhere(PlainSelect select, String segment) {
-    Expression sqlExpression = getSqlExpression(select, segment);
+  private void setWhere(PlainSelect select, String mappedStatementId) {
+    Expression sqlExpression = getSqlExpression(select, mappedStatementId);
     select.setWhere(sqlExpression);
   }
 
-  private Expression getSqlExpression(PlainSelect select, String segment) {
-    EqualsTo equalsTo = new EqualsTo(new Column(segment), new LongValue(Constants.STATUS_ENABLE));
+
+  private Expression getSqlExpression(PlainSelect select, String mappedStatementId) {
+    EqualsTo equalsTo = new EqualsTo(new Column("status"), new LongValue(Constants.STATUS_ENABLE));
     Expression where = select.getWhere();
     if (where == null) {
       return equalsTo;
     }
-
     AndExpression andExpression = new AndExpression();
     andExpression.setLeftExpression(where);
     andExpression.setRightExpression(equalsTo);
     return andExpression;
   }
 
+
+  /*
+   * 依据注解的版本,暂时没有调通, 详情见自定义statusNodeControl注解那里.
+   */
+//  private Expression getSqlExpression(PlainSelect select, String mappedStatementId) {
+//    String className = mappedStatementId.substring(0, mappedStatementId.lastIndexOf("."));
+//    String methodName = mappedStatementId.substring(mappedStatementId.lastIndexOf(".") + 1);
+//    try {
+//      Method[] methods = Class.forName(className).getMethods();
+//      for (Method method : methods) {
+//        if (method.getName().equals(methodName)) {
+//          StatusNoneControl annotation = method.getAnnotation(StatusNoneControl.class);
+//          if (annotation != null) {
+//            // 如果找到注解，说明用户显示的要求不需要控制状态
+//            return select.getWhere();
+//          } else {
+//            /*
+//             如果方法名找到，但没有注解，说明是要控制状态的
+//             既然知道了结果, 那跳出逻辑即可.
+//             TODO:
+//             这里可以优化性能逻辑,上述的查询的结果,其实可以放在一个map中,
+//             key是mappedStatementId, value是是否需要status注解
+//             这样,会大大增加查询速度.
+//             */
+//            break;
+//          }
+//        }
+//      }
+//    } catch (ClassNotFoundException e) {
+//      throw new RuntimeException(e);
+//    }
+//    // 这里是需要控制状态的
+//    EqualsTo equalsTo = new EqualsTo(new Column("status"), new LongValue(Constants.STATUS_ENABLE));
+//    Expression where = select.getWhere();
+//    if (where == null) {
+//      return equalsTo;
+//    }
+//    AndExpression andExpression = new AndExpression();
+//    andExpression.setLeftExpression(where);
+//    andExpression.setRightExpression(equalsTo);
+//    return andExpression;
+//  }
 }

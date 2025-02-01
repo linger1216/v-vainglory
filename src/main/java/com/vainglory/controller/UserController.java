@@ -1,5 +1,7 @@
 package com.vainglory.controller;
 
+import com.vainglory.annotation.StatusNoneControl;
+import com.vainglory.common.StatusConditionHelper;
 import com.vainglory.pojo.dto.CreateUserReq;
 import com.vainglory.pojo.User;
 import com.vainglory.service.IUserService;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 @Slf4j
@@ -46,6 +49,7 @@ public class UserController {
 
   @GetMapping
   public List<User> get() {
+    StatusConditionHelper.setSkipStatusCondition(true);
     List<User> users = userService.list();
     return users;
   }

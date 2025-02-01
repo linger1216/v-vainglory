@@ -3,6 +3,15 @@
 
 - deletedAt，可以调整为时间
 - dto转pojo，有个东西叫ModelMapper
+'
+
+
+数据权限的拦截器
+status的拦截器
+
+自定义注解，让拦截器生效或不生效
+
+用户权限的设计
 
 时间戳
 https://www.cnblogs.com/hxysg/p/17772275.html
@@ -288,3 +297,29 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/x
   </build>
 
 </project>
+
+
+
+package com.vainglory.common;
+
+/*
+是用thread local 来保存状态
+大部分的场景都是获取status=1的状态，极个别的情况需要获取status=0的状态
+用这个来偷懒.
+*/
+public class StatusConditionHelper {
+private static final ThreadLocal<Boolean> skipStatusCondition = ThreadLocal.withInitial(() -> false);
+
+public static void setSkipStatusCondition(boolean skip) {
+skipStatusCondition.set(skip);
+}
+
+public static boolean isSkipStatusCondition() {
+return skipStatusCondition.get();
+}
+
+public static void removeStatusCondition() {
+skipStatusCondition.remove();
+}
+}
+
