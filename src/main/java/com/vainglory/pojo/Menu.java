@@ -9,10 +9,19 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+/**
+ * <p>
+ * 
+ * </p>
+ *
+ * @author lid
+ * @since 2025-02-04
+ */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class Role extends BaseEntity {
+public class Menu extends BaseEntity {
+
 
     /**
      * id
@@ -25,7 +34,32 @@ public class Role extends BaseEntity {
     private String name;
 
     /**
-     * 数据范围
+     * 图标
      */
-    private Integer dataScope;
+    private String icon;
+
+    /**
+     * 对应前端组件
+     */
+    private String component;
+
+    /**
+     * url路径
+     */
+    private String path;
+
+    /**
+     * 父ID,如果为空,则代表一级菜单
+     */
+    private String parentId;
+
+    /**
+     * 在前端是否保活 1正常 0禁用
+     */
+    private Integer keepAlive;
+
+    /**
+     * 排序规则
+     */
+    private Integer sort;
 }

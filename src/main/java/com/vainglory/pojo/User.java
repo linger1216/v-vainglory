@@ -5,8 +5,12 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
 public class User extends BaseEntity{
   private String id;
   private String avatar;
@@ -17,10 +21,8 @@ public class User extends BaseEntity{
   private String email;
   private String phone;
   private String address;
-  @TableField(value = "dept_ids")
+  // 附加字段
   private String[] deptIds;
-  @TableField(value = "role_ids")
   private String[] roleIds;
-  @TableField(value = "post_ids")
   private String[] postIds;
 }

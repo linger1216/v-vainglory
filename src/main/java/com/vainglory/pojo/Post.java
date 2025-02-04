@@ -9,10 +9,19 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+/**
+ * <p>
+ * 
+ * </p>
+ *
+ * @author lid
+ * @since 2025-02-04
+ */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class Role extends BaseEntity {
+public class Post extends BaseEntity {
+
 
     /**
      * id
@@ -25,7 +34,17 @@ public class Role extends BaseEntity {
     private String name;
 
     /**
-     * 数据范围
+     * 描述
      */
-    private Integer dataScope;
+    private String description;
+
+    /**
+     * 所属部门
+     */
+    private String deptId;
+
+    /**
+     * 排序规则
+     */
+    private Integer sort;
 }
