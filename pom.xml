@@ -108,6 +108,22 @@
       <version>2.18.2</version>
     </dependency>
 
+    <!-- swagger -->
+    <dependency>
+      <groupId>io.swagger.core.v3</groupId>
+      <artifactId>swagger-annotations</artifactId>
+      <version>2.2.28</version>
+    </dependency>
+
+    <!-- swagger-models -->
+    <dependency>
+      <groupId>io.swagger.core.v3</groupId>
+      <artifactId>swagger-models</artifactId>
+      <version>2.2.28</version>
+    </dependency>
+
+
+
   </dependencies>
 
   <build>

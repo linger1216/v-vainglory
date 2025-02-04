@@ -12,7 +12,7 @@
  Target Server Version : 160004 (160004)
  File Encoding         : 65001
 
- Date: 29/01/2025 23:34:46
+ Date: 03/02/2025 22:36:31
 */
 
 
@@ -21,25 +21,25 @@
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."t_user";
 CREATE TABLE "public"."t_user" (
-                                   "id" text COLLATE "pg_catalog"."default" NOT NULL,
-                                   "avatar" text COLLATE "pg_catalog"."default",
-                                   "nickname" text COLLATE "pg_catalog"."default",
-                                   "username" text COLLATE "pg_catalog"."default",
-                                   "password" text COLLATE "pg_catalog"."default",
-                                   "salt" text COLLATE "pg_catalog"."default",
-                                   "email" text COLLATE "pg_catalog"."default",
-                                   "phone" text COLLATE "pg_catalog"."default",
-                                   "address" text COLLATE "pg_catalog"."default",
-                                   "dept_id" text COLLATE "pg_catalog"."default",
-                                   "role_id" text COLLATE "pg_catalog"."default",
-                                   "post_id" text COLLATE "pg_catalog"."default",
-                                   "status" int2,
-                                   "create_by" text COLLATE "pg_catalog"."default",
-                                   "update_by" text COLLATE "pg_catalog"."default",
-                                   "version" int4,
-                                   "create_time" timestamptz(6),
-                                   "update_time" timestamptz(6),
-                                   "delete_time" timestamptz(6)
+   "id" text COLLATE "pg_catalog"."default" NOT NULL,
+   "avatar" text COLLATE "pg_catalog"."default",
+   "nickname" text COLLATE "pg_catalog"."default",
+   "username" text COLLATE "pg_catalog"."default",
+   "password" text COLLATE "pg_catalog"."default",
+   "salt" text COLLATE "pg_catalog"."default",
+   "email" text COLLATE "pg_catalog"."default",
+   "phone" text COLLATE "pg_catalog"."default",
+   "address" text COLLATE "pg_catalog"."default",
+   "dept_ids" text[] COLLATE "pg_catalog"."default",
+   "role_ids" text[] COLLATE "pg_catalog"."default",
+   "post_ids" text[] COLLATE "pg_catalog"."default",
+   "status" int2,
+   "create_by" text COLLATE "pg_catalog"."default",
+   "update_by" text COLLATE "pg_catalog"."default",
+   "version" int4,
+   "create_time" timestamp(6),
+   "update_time" timestamp(6),
+   "delete_time" timestamp(6)
 )
 ;
 ALTER TABLE "public"."t_user" OWNER TO "postgres";
@@ -52,10 +52,10 @@ COMMENT ON COLUMN "public"."t_user"."salt" IS '盐';
 COMMENT ON COLUMN "public"."t_user"."email" IS '电子邮件';
 COMMENT ON COLUMN "public"."t_user"."phone" IS '手机号';
 COMMENT ON COLUMN "public"."t_user"."address" IS '地址';
-COMMENT ON COLUMN "public"."t_user"."dept_id" IS '部门id';
-COMMENT ON COLUMN "public"."t_user"."role_id" IS '角色id';
-COMMENT ON COLUMN "public"."t_user"."post_id" IS '岗位id';
-COMMENT ON COLUMN "public"."t_user"."status" IS '状态: 1正常 2禁用';
+COMMENT ON COLUMN "public"."t_user"."dept_ids" IS '所属部门id';
+COMMENT ON COLUMN "public"."t_user"."role_ids" IS '所属角色id';
+COMMENT ON COLUMN "public"."t_user"."post_ids" IS '所属岗位id';
+COMMENT ON COLUMN "public"."t_user"."status" IS '状态: 1正常 0禁用';
 COMMENT ON COLUMN "public"."t_user"."create_by" IS '创建者';
 COMMENT ON COLUMN "public"."t_user"."update_by" IS '更新者';
 COMMENT ON COLUMN "public"."t_user"."version" IS '版本';

@@ -33,6 +33,17 @@ spring:
       platform: postgresql
       schema-locations:
       - classpath:db/${spring.sql.init.platform}/schema-user.sql
+      - classpath:db/${spring.sql.init.platform}/schema-dept.sql
+      - classpath:db/${spring.sql.init.platform}/schema-post.sql
+      - classpath:db/${spring.sql.init.platform}/schema-user-dept.sql
+      - classpath:db/${spring.sql.init.platform}/schema-user-post.sql
+      - classpath:db/${spring.sql.init.platform}/schema-role.sql
+      - classpath:db/${spring.sql.init.platform}/schema-api.sql
+      - classpath:db/${spring.sql.init.platform}/schema-menu.sql
+      - classpath:db/${spring.sql.init.platform}/schema-role-user.sql
+      - classpath:db/${spring.sql.init.platform}/schema-role-api.sql
+      - classpath:db/${spring.sql.init.platform}/schema-role-menu.sql
+
       data-locations:
       - classpath:db/${spring.sql.init.platform}/data-user.sql
 
@@ -48,4 +59,5 @@ mybatis-plus:
       logic-delete-field: delete_time
       logic-delete-value: 'now()'
       logic-not-delete-value: 'null'
+      id-type: assign_uuid
   type-aliases-package: com.vainglory.pojo

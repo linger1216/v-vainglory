@@ -5,6 +5,9 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/*
+Dto -> POJO 的赋值
+ */
 @Configuration
 public class ModelMapperConfig {
 

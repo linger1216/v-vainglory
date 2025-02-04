@@ -5,6 +5,7 @@
 - dto转pojo，有个东西叫ModelMapper
 '
 
+全局id的生成
 
 数据权限的拦截器
 status的拦截器
@@ -35,6 +36,8 @@ lombok的问题，特么最终要加这个 f**
         </configuration>
       </plugin>
 ```
+
+
 
 
 增加了数据库初始化

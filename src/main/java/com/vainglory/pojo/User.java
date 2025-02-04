@@ -8,7 +8,6 @@ import lombok.Data;
 
 @Data
 public class User extends BaseEntity{
-  @TableId(type = IdType.ASSIGN_ID)
   private String id;
   private String avatar;
   private String nickname;
@@ -18,10 +17,10 @@ public class User extends BaseEntity{
   private String email;
   private String phone;
   private String address;
-  @TableField(value = "dept_id")
-  private String deptId;
-  @TableField(value = "role_id")
-  private String roleId;
-  @TableField(value = "post_id")
-  private String postId;
+  @TableField(value = "dept_ids")
+  private String[] deptIds;
+  @TableField(value = "role_ids")
+  private String[] roleIds;
+  @TableField(value = "post_ids")
+  private String[] postIds;
 }
