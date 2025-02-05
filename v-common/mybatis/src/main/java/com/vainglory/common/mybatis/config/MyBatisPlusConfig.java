@@ -16,20 +16,14 @@ import com.vainglory.common.mybatis.handler.MyBatisPlusExceptionHandler;
 import com.vainglory.common.mybatis.handler.PrefixIdentifierGenerator;
 import com.vainglory.common.mybatis.interceptor.StatusInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@MapperScan("com.vainglory.**.mapper")
+@MapperScan("${mybatis-plus.mapperPackage}")
 @PropertySource(value = "classpath:common-mybatis.yaml", factory = YmlPropertySourceFactory.class)
 public class MyBatisPlusConfig {
-  public MyBatisPlusConfig() {
-    System.out.println("MyBatisPlusConfig.....!!!");
-  }
-
   @Bean
   public MybatisPlusInterceptor mybatisPlusInterceptor() {
     MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
