@@ -2,32 +2,97 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
     <version>3.4.2</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
+
   <groupId>com.jellyfish</groupId>
   <artifactId>vainglory</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>${revision}</version>
+
+  <packaging>pom</packaging>
   <name>v-vainglory</name>
   <description>vainglory is a base project for Jellyfish Ltd</description>
+  <modules>
+    <module>v-app</module>
+    <module>v-common</module>
+    <module>v-system</module>
+  </modules>
 
   <properties>
+    <revision>0.1.0</revision>
     <java.version>17</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    <mapstruct-plus.version>1.4.6</mapstruct-plus.version>
+    <mapstruct-plus.lombok.version>0.2.0</mapstruct-plus.lombok.version>
   </properties>
+
+
+
+
+  <profiles>
+    <profile>
+      <id>dev</id>
+      <properties>
+        <!-- 环境标识，需要与配置文件的名称相对应 -->
+        <profiles.active>dev</profiles.active>
+        <logging.level>debug</logging.level>
+      </properties>
+      <activation>
+        <!-- 默认环境 -->
+        <activeByDefault>true</activeByDefault>
+      </activation>
+    </profile>
+
+    <profile>
+      <id>prod</id>
+      <properties>
+        <profiles.active>prod</profiles.active>
+        <logging.level>warn</logging.level>
+      </properties>
+    </profile>
+  </profiles>
+
 
   <dependencies>
 
+    <!-- SQL性能分析 -->
+    <dependency>
+      <groupId>p6spy</groupId>
+      <artifactId>p6spy</artifactId>
+      <version>3.9.1</version>
+    </dependency>
+
+
+    <!-- 动态数据源 -->
+    <dependency>
+      <groupId>com.baomidou</groupId>
+      <artifactId>dynamic-datasource-spring-boot3-starter</artifactId>
+      <version>4.3.1</version>
+    </dependency>
+
+
     <!-- 映射对象 -->
     <dependency>
-      <groupId>org.modelmapper</groupId>
-      <artifactId>modelmapper</artifactId>
-      <version>3.2.2</version>
+      <groupId>io.github.linpeilie</groupId>
+      <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
+      <version>${mapstruct-plus.version}</version>
     </dependency>
+
+
+    <!-- 常用的工具类 -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.17.0</version>
+    </dependency>
+
 
     <!-- 反射包，用于修改一些只读的东西，用在了拦截器去修改sql -->
     <dependency>
@@ -152,6 +217,17 @@
               <artifactId>lombok</artifactId>
               <version>1.18.36</version>
               <scope>provided</scope>
+            </path>
+
+            <path>
+              <groupId>io.github.linpeilie</groupId>
+              <artifactId>mapstruct-plus-processor</artifactId>
+              <version>${mapstruct-plus.version}</version>
+            </path>
+            <path>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok-mapstruct-binding</artifactId>
+              <version>${mapstruct-plus.lombok.version}</version>
             </path>
           </annotationProcessorPaths>
         </configuration>
