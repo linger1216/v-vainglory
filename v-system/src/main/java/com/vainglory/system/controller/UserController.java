@@ -2,7 +2,7 @@ package com.vainglory.system.controller;
 
 import com.vainglory.common.core.utils.MapstructUtils;
 import com.vainglory.system.domain.User;
-import com.vainglory.system.domain.dto.CreateUserReq;
+import com.vainglory.system.domain.dto.UserReq;
 import com.vainglory.system.service.IUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class UserController {
   private IUserService userService;
 
   @PostMapping
-  public User create(@Validated @RequestBody CreateUserReq req) {
+  public User create(@Validated @RequestBody UserReq req) {
     User user = MapstructUtils.convert(req, User.class);
     boolean result = userService.save(user);
     if (!result) {

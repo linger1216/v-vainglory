@@ -1,16 +1,14 @@
 package com.vainglory.system.domain.dto;
 
-import com.vainglory.common.mybatis.domain.BaseEntity;
+import com.vainglory.common.mybatis.domain.dto.BaseReq;
 import com.vainglory.system.domain.User;
 import io.github.linpeilie.annotations.AutoMapper;
-import io.github.linpeilie.annotations.AutoMapping;
 import jakarta.validation.constraints.*;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Data
 @AutoMapper(target = User.class)
-public class CreateUserReq {
+public class UserReq extends BaseReq {
   private String avatar;
 
   @Size(min = 2, max = 12, message = "昵称长度必须在2-12个字符之间")
