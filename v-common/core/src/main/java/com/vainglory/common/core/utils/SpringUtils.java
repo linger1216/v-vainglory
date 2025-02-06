@@ -7,9 +7,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import static io.github.linpeilie.mapstruct.SpringContextUtils4Msp.getBeanFactory;
+
 /**
  * spring工具类
- *
  */
 @Component
 public final class SpringUtils extends SpringUtil {

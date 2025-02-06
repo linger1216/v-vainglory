@@ -460,7 +460,48 @@ comment on column t_tenant.update_time is '更新时间';
 comment on column t_tenant.delete_time is '删除时间';
 alter table t_tenant owner to postgres;
 
+-- 客户端
+drop table if exists t_client;
+create table t_client
+(
+    id             text not null primary key,
+    key            text,
+    secret         text,
+    grant_type     text,
+    device_type    text,
+    timeout        integer,
+    active_timeout integer,
 
+    tenant_id      text,
+    status         smallint,
+    create_dept    text,
+    create_by      text,
+    update_by      text,
+    version        integer,
+    create_time    timestamp(6),
+    update_time    timestamp(6),
+    delete_time    timestamp(6)
+);
+comment on column t_client.id is 'id';
+comment on column t_client.key is '客户端key';
+comment on column t_client.secret is '客户端密钥';
+comment on column t_client.grant_type is '授权类型 password,sms,social';
+comment on column t_client.device_type is '设备类型 pc, android, ios, device';
+comment on column t_client.timeout is 'token 有效期（单位：秒） 默认30天，-1 代表永久有效';
+comment on column t_client.active_timeout is 'token 最低活跃频率（单位：秒），如果 token 超过此时间没有访问系统就会被冻结，默认-1 代表不限制，永不冻结';
+
+comment on column t_client.status is '状态: 1正常 0禁用';
+comment on column t_client.create_by is '创建者';
+comment on column t_client.update_by is '更新者';
+comment on column t_client.version is '版本';
+comment on column t_client.create_time is '创建时间';
+comment on column t_client.update_time is '更新时间';
+comment on column t_client.delete_time is '删除时间';
+alter table t_client owner to postgres;
+
+
+
+------------------------------------ 数据
 -- 内置
 -- 用户超管
 truncate table t_user;
@@ -492,6 +533,13 @@ values ('role:0', '超级管理员', '超级管理员', 'admin', 1, '1', 1, 'ten
 truncate table t_post;
 insert into t_post(id, name, description, dept_id, sort, status, tenant_id, create_dept, create_by, update_by, version, create_time, update_time, delete_time)
 values ('post:0', '超管', '超级管理员', 'dept:0', 1, 1, 'tenant:0', 'dept:0', 'user:0', 'user:0', 1,
+        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null);
+
+
+-- 应用
+truncate table t_client;
+insert into t_client(id, key, secret, grant_type, device_type, timeout, active_timeout, tenant_id, status, create_dept, create_by, update_by, version, create_time, update_time, delete_time)
+values ('client:0', 'client:key', 'client:secret', 'password,sms,social', 'pc', 2592000, -1, 'tenant:0', 1, 'dept:0', 'user:0', 'user:0', 1,
         '2024-12-12 00:00:00', '2024-12-12 00:00:00', null);
 
 

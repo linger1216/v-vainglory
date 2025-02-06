@@ -26,6 +26,8 @@
   <properties>
     <revision>0.1.0</revision>
     <java.version>17</java.version>
+    <hutool.version>5.8.35</hutool.version>
+    <satoken.version>1.40.0</satoken.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
@@ -62,6 +64,41 @@
 
   <dependencies>
 
+    <!-- hutool 的依赖配置, 但这个只是导入依赖解决sa token的jwt问题, 真正导入在common-core那里-->
+    <dependency>
+      <groupId>cn.hutool</groupId>
+      <artifactId>hutool-bom</artifactId>
+      <version>${hutool.version}</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+
+    <!-- Sa-Token 权限认证, 在线文档：http://sa-token.dev33.cn/ -->
+    <dependency>
+      <groupId>cn.dev33</groupId>
+      <artifactId>sa-token-spring-boot3-starter</artifactId>
+      <version>${satoken.version}</version>
+    </dependency>
+    <!-- Sa-Token 整合 jwt -->
+    <dependency>
+      <groupId>cn.dev33</groupId>
+      <artifactId>sa-token-jwt</artifactId>
+      <version>${satoken.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>cn.hutool</groupId>
+          <artifactId>hutool-all</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>cn.dev33</groupId>
+      <artifactId>sa-token-core</artifactId>
+      <version>${satoken.version}</version>
+    </dependency>
+
+
+
     <!-- SQL性能分析 -->
     <dependency>
       <groupId>p6spy</groupId>
@@ -91,14 +128,6 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <version>3.17.0</version>
-    </dependency>
-
-
-    <!-- 反射包，用于修改一些只读的东西，用在了拦截器去修改sql -->
-    <dependency>
-      <groupId>cn.hutool</groupId>
-      <artifactId>hutool-all</artifactId>
-      <version>5.8.35</version>
     </dependency>
 
 
