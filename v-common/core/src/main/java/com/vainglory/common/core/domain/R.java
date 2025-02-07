@@ -1,17 +1,20 @@
-package com.vainglory.common.core.constant;
+package com.vainglory.common.core.domain;
 
+import com.vainglory.common.core.constant.Constants;
 import com.vainglory.common.core.enums.ResponseEnum;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /*
   统一返回值
  */
-@Data
+@Getter
 @NoArgsConstructor
-public class R<T> implements Serializable {
+public class R<T> {
   private int code;
   private String msg;
   private T data;
@@ -28,27 +31,17 @@ public class R<T> implements Serializable {
   }
 
   public static <T> R<T> OK(T data) {
-
-    R<T> r = new R<>();
-    r.setCode(0);
-    r.setData(data);
-    r.setMsg("success");
-    return r;
-
-//    return new R<>(Constants.CODE_SUCCESS, "success", data);
+    return new R<>(Constants.CODE_SUCCESS, "success", data);
   }
   public static <T> R<T> OK() {
     return new R<>(Constants.CODE_SUCCESS, "success");
   }
-
   public static <T> R<T> F(ResponseEnum e) {
     return new R<>(e.getCode(), e.getMsg());
   }
-
   public static <T> R<T> F(ResponseEnum e, String msg) {
     return new R<>(e.getCode(), msg);
   }
-
   public static <T> R<T> F(int code, String msg) {
     return new R<>(code, msg);
   }

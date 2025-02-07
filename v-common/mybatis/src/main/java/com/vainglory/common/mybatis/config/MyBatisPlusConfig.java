@@ -12,7 +12,6 @@ import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInt
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.vainglory.common.core.factory.YmlPropertySourceFactory;
 import com.vainglory.common.mybatis.handler.InjectMetaObjectHandler;
-import com.vainglory.common.mybatis.handler.MyBatisPlusExceptionHandler;
 import com.vainglory.common.mybatis.handler.PrefixIdentifierGenerator;
 import com.vainglory.common.mybatis.interceptor.StatusInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
@@ -53,12 +52,6 @@ public class MyBatisPlusConfig {
   @Bean
   public MetaObjectHandler metaObjectHandler() {
     return new InjectMetaObjectHandler();
-  }
-
-  // 配置全局异常处理
-  @Bean
-  public MyBatisPlusExceptionHandler myBatisPlusExceptionHandler() {
-    return new MyBatisPlusExceptionHandler();
   }
 
   // 配置ID生成器
