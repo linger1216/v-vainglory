@@ -16,12 +16,12 @@ public class LoginResp {
   /**
    * 授权令牌 access_token 的有效期
    */
-  private Long expireIn;
+  private Integer expireIn;
 
   /**
    * 刷新令牌 refresh_token 的有效期
    */
-  private Long refreshExpireIn;
+  private Integer refreshExpireIn;
 
   /**
    * 应用id

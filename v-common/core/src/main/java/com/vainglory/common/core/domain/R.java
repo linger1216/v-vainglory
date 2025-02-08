@@ -1,13 +1,9 @@
 package com.vainglory.common.core.domain;
 
-import com.vainglory.common.core.constant.Constants;
-import com.vainglory.common.core.enums.ResponseEnum;
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.vainglory.common.core.service.IErrorCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.io.Serial;
-import java.io.Serializable;
 
 /*
   统一返回值
@@ -15,8 +11,14 @@ import java.io.Serializable;
 @Getter
 @NoArgsConstructor
 public class R<T> {
+
+  private static final Integer SUCCESS = 0;
+  private static final Integer FAILED = 500;
+
   private int code;
   private String msg;
+
+  @JsonInclude(JsonInclude.Include.NON_NULL)
   private T data;
 
   public R(int code, String msg, T data) {
@@ -30,22 +32,30 @@ public class R<T> {
     this.msg = msg;
   }
 
+  public Boolean isSuccess() {
+    return this.code == SUCCESS;
+  }
+
+  public Boolean isFailed() {
+    return this.code != SUCCESS;
+  }
+
   public static <T> R<T> OK(T data) {
-    return new R<>(Constants.CODE_SUCCESS, "success", data);
+    return new R<>(SUCCESS, "success", data);
   }
   public static <T> R<T> OK() {
-    return new R<>(Constants.CODE_SUCCESS, "success");
+    return new R<>(SUCCESS, "success");
   }
-  public static <T> R<T> F(ResponseEnum e) {
+  public static <T> R<T> F(IErrorCode e) {
     return new R<>(e.getCode(), e.getMsg());
   }
-  public static <T> R<T> F(ResponseEnum e, String msg) {
-    return new R<>(e.getCode(), msg);
+  public static <T> R<T> F(R<?> e) {
+    return new R<>(e.getCode(), e.getMsg());
   }
   public static <T> R<T> F(int code, String msg) {
     return new R<>(code, msg);
   }
   public static <T> R<T> F(String msg) {
-    return new R<>(Constants.CODE_FAILED, msg);
+    return new R<>(FAILED, msg);
   }
 }

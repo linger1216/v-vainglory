@@ -33,6 +33,12 @@
       <artifactId>v-common-mybatis</artifactId>
       <version>${revision}</version>
     </dependency>
+
+    <dependency>
+      <groupId>com.jellyfish</groupId>
+      <artifactId>v-common-captcha</artifactId>
+      <version>${revision}</version>
+    </dependency>
   </dependencies>
 
   <properties>

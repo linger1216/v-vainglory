@@ -485,7 +485,7 @@ create table t_client
 comment on column t_client.id is 'id';
 comment on column t_client.key is '客户端key';
 comment on column t_client.secret is '客户端密钥';
-comment on column t_client.grant_type is '授权类型 password,sms,social';
+comment on column t_client.grant_type is '授权类型 password|sms|social|xcx|email';
 comment on column t_client.device_type is '设备类型 pc, android, ios, device';
 comment on column t_client.timeout is 'token 有效期（单位：秒） 默认30天，-1 代表永久有效';
 comment on column t_client.active_timeout is 'token 最低活跃频率（单位：秒），如果 token 超过此时间没有访问系统就会被冻结，默认-1 代表不限制，永不冻结';
@@ -507,7 +507,7 @@ alter table t_client owner to postgres;
 truncate table t_user;
 insert into t_user(id, avatar, nickname, username, description, password, salt, email, phone, address, status, tenant_id, create_dept,
                    create_by, update_by, version, create_time, update_time, delete_time)
-values ('user:0', 'http://avatar.png', 'lid', 'admin', '系统的内置管理用户',
+values ('user:0', 'http://avatar.png', 'leegohi', 'admin', '系统的内置管理用户',
         '123456', '12345', 'eg@mail.com', '', '上海静安区', 1, 'tenant:0', 'dept:0', 'user:0', 'user:0', 1,
         '2024-12-12 00:00:00', '2024-12-12 00:00:00', null);
 
@@ -520,7 +520,7 @@ values ('dept:0', '根部门', '虚拟的部门', null, null, 'user:0', 'eg@mail
 -- 根租户
 truncate table t_tenant;
 insert into t_tenant(id, name, description, contact_name, contact_phone, license_number, address, domain, plan_id, expire_time, account_count, tenant_id, status, create_dept, create_by, update_by, version, create_time, update_time, delete_time)
-values ('tenant:0', '根公司', '虚拟的根公司', 'lid', '', null, '上海静安区', null, 'plan:0', '9999-12-12 00:00:00', -1, 'tenant:0', 1, 'dept:0', 'user:0', 'user:0', 1,
+values ('tenant:0', '根公司', '虚拟的根公司', 'leegohi', '', null, '上海静安区', null, 'plan:0', '9999-12-12 00:00:00', -1, 'tenant:0', 1, 'dept:0', 'user:0', 'user:0', 1,
         '2024-12-12 00:00:00', '2024-12-12 00:00:00', null);
 
 -- 角色
