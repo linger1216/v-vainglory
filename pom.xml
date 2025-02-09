@@ -32,6 +32,9 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
+    <redisson.version>3.44.0</redisson.version>
+    <lock4j.version>2.2.7</lock4j.version>
+    <jsr310.version>2.18.2</jsr310.version>
     <mapstruct-plus.version>1.4.6</mapstruct-plus.version>
     <mapstruct-plus.lombok.version>0.2.0</mapstruct-plus.lombok.version>
   </properties>
@@ -63,6 +66,43 @@
   </profiles>
 
   <dependencies>
+
+    <!-- 解决mac m1 io.netty.resolver.dns.macos.MacOSDnsServerAddressStreamProvider 问题 -->
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-resolver-dns-native-macos</artifactId>
+      <version>4.1.75.Final</version>
+      <classifier>osx-aarch_64</classifier>
+    </dependency>
+
+    <!--  内存的缓存库 -->
+    <dependency>
+      <groupId>com.github.ben-manes.caffeine</groupId>
+      <artifactId>caffeine</artifactId>
+      <version>${caffeine.version}</version>
+    </dependency>
+
+    <!--  日期的java转换 -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+      <version>${jsr310.version}</version>
+    </dependency>
+
+    <!--redisson-->
+    <dependency>
+      <groupId>org.redisson</groupId>
+      <artifactId>redisson-spring-boot-starter</artifactId>
+      <version>${redisson.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.baomidou</groupId>
+      <artifactId>lock4j-redisson-spring-boot-starter</artifactId>
+      <version>${lock4j.version}</version>
+    </dependency>
+
+
 
     <!-- hutool 的依赖配置, 但这个只是导入依赖解决sa token的jwt问题, 真正导入在common-core那里-->
     <dependency>

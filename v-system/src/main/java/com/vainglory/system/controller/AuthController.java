@@ -4,6 +4,7 @@ package com.vainglory.system.controller;
 import com.vainglory.common.core.domain.R;
 import com.vainglory.common.core.utils.JsonUtils;
 import com.vainglory.common.core.utils.ValidatorUtils;
+import com.vainglory.common.redis.utils.CacheUtils;
 import com.vainglory.system.domain.Client;
 import com.vainglory.system.domain.User;
 import com.vainglory.system.domain.dto.LoginReq;
@@ -45,6 +46,10 @@ public class AuthController {
     if (req == null) {
       return R.F(E.bad_request);
     }
+
+//    CacheUtils.put("names", "key", "val");
+//    Object o = CacheUtils.get("names", "key");
+//    log.info("o = {}", o);
 
     String clientId = req.getClientId();
     String tenantId = req.getTenantId();

@@ -37,6 +37,13 @@
       <version>${revision}</version>
       <scope>compile</scope>
     </dependency>
+
+    <dependency>
+      <groupId>com.jellyfish</groupId>
+      <artifactId>v-common-redis</artifactId>
+      <version>${revision}</version>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
 
 </project>

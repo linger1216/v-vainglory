@@ -16,9 +16,10 @@
   <artifactId>v-app</artifactId>
 
   <dependencies>
+
     <dependency>
       <groupId>com.jellyfish</groupId>
-      <artifactId>v-system</artifactId>
+      <artifactId>v-common</artifactId>
       <version>${revision}</version>
     </dependency>
 
@@ -37,6 +38,18 @@
     <dependency>
       <groupId>com.jellyfish</groupId>
       <artifactId>v-common-captcha</artifactId>
+      <version>${revision}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.jellyfish</groupId>
+      <artifactId>v-common-redis</artifactId>
+      <version>${revision}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.jellyfish</groupId>
+      <artifactId>v-system</artifactId>
       <version>${revision}</version>
     </dependency>
   </dependencies>

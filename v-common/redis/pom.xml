@@ -5,27 +5,31 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.jellyfish</groupId>
-    <artifactId>vainglory</artifactId>
+    <artifactId>v-common</artifactId>
     <version>${revision}</version>
   </parent>
 
+  <artifactId>v-common-redis</artifactId>
+
   <description>
-    common 通用模块
+    Redis 缓存
   </description>
 
-  <artifactId>v-common</artifactId>
-  <packaging>pom</packaging>
-  <modules>
-    <module>mybatis</module>
-    <module>core</module>
-    <module>captcha</module>
-    <module>redis</module>
-  </modules>
 
   <properties>
     <maven.compiler.source>23</maven.compiler.source>
     <maven.compiler.target>23</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.jellyfish</groupId>
+      <artifactId>v-common-core</artifactId>
+      <version>${revision}</version>
+      <scope>compile</scope>
+    </dependency>
+
+  </dependencies>
 
 </project>
