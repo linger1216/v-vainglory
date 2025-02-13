@@ -24,9 +24,11 @@ public class LoginReq extends BaseReq {
 
   /**
    * 租户ID
+   * 暂时注释
+   * 因为通过clientId 获取 tenantId, 这个逻辑粗想没啥问题, 后面有了问题再说.
    */
   @NotBlank
-  private String tenantId;
+  //  private String tenantId;
 
   /**
    * 授权类型

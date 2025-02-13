@@ -11,14 +11,22 @@ import com.vainglory.system.domain.Client;
 import com.vainglory.system.domain.User;
 import com.vainglory.system.domain.dto.PasswordLoginReq;
 import com.vainglory.system.enums.E;
-import com.vainglory.system.service.ILoginService;
+import com.vainglory.system.service.ILoginValidService;
 import com.vainglory.system.service.IUserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
-public class PasswordLoginService implements ILoginService {
+@Service("passwordLoginValidService")
+public class PasswordLoginValidServiceImpl implements ILoginValidService {
+  @Autowired
   private IUserService userService;
+  @Autowired
   private ICaptchaService captchaService;
+  @Autowired
   private CaptchaProperties captchaProperties;
 
   @Override
@@ -29,11 +37,14 @@ public class PasswordLoginService implements ILoginService {
       return R.F(E.bad_request);
     }
 
-    String tenantId = loginBody.getTenantId();
     String username = loginBody.getUsername();
     String password = loginBody.getPassword();
     String code = loginBody.getCode();
     String uuid = loginBody.getUuid();
+
+    if (captchaService == null) {
+      return R.F(E.bad_request);
+    }
 
     // 检查验证码
     if (captchaProperties.getEnable()) {
@@ -47,11 +58,6 @@ public class PasswordLoginService implements ILoginService {
     User user = userService.getOne(wrapper);
     if (user == null) {
       return R.F(E.no_user);
-    }
-
-    // 检查用户的租户等信息
-    if (!user.getTenantId().equals(tenantId)) {
-      return R.F(E.invalid_tenant);
     }
 
     // 密码是否匹配

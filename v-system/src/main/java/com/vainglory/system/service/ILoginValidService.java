@@ -9,6 +9,7 @@ import com.vainglory.system.domain.User;
 password|sms|social|xcx|email
  */
 
-public interface ILoginService {
+public interface ILoginValidService {
+  String LOGIN_VALID_SERVICE = "LoginValidService";
   R<User> login(String body, Client client);
 }

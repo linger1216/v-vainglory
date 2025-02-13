@@ -36,10 +36,6 @@ import java.util.TimeZone;
 @EnableConfigurationProperties(RedissonProperties.class)
 public class RedisConfig {
 
-  public RedisConfig() {
-    log.debug("RedisConfig...");
-  }
-
   @Autowired
   private RedissonProperties redissonProperties;
 

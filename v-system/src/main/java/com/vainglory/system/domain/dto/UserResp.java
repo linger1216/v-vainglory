@@ -1,7 +1,9 @@
 package com.vainglory.system.domain.dto;
 
 import com.vainglory.common.mybatis.domain.dto.BaseResp;
+import com.vainglory.system.domain.Dept;
 import com.vainglory.system.domain.Post;
+import com.vainglory.system.domain.Role;
 import com.vainglory.system.domain.User;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;

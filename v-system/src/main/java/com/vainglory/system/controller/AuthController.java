@@ -1,33 +1,46 @@
 package com.vainglory.system.controller;
 
 
+import cn.dev33.satoken.secure.BCrypt;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.vainglory.common.core.domain.R;
 import com.vainglory.common.core.utils.JsonUtils;
+import com.vainglory.common.core.utils.MapstructUtils;
+import com.vainglory.common.core.utils.SpringUtils;
 import com.vainglory.common.core.utils.ValidatorUtils;
-import com.vainglory.common.redis.utils.CacheUtils;
-import com.vainglory.system.domain.Client;
-import com.vainglory.system.domain.User;
-import com.vainglory.system.domain.dto.LoginReq;
-import com.vainglory.system.domain.dto.LoginResp;
+import com.vainglory.system.domain.*;
+import com.vainglory.system.domain.dto.*;
 import com.vainglory.system.enums.E;
-import com.vainglory.system.service.IClientService;
-import com.vainglory.system.service.ILoginService;
-import com.vainglory.system.service.impl.*;
+import com.vainglory.system.service.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.Wrapper;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import static com.vainglory.system.service.ILoginValidService.LOGIN_VALID_SERVICE;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/auth")
+@Validated
 public class AuthController {
-  private final IClientService clientService;
 
+  private final IClientService clientService;
+  private final IRoleService roleService;
+  private final IDeptService deptService;
+  private final IPostService postService;
+  private final IMenuService menuService;
+  private final IUserService userService;
   /*
     这里必须要采用字符串来进行参数传递, 而不要用结构化的
     因为这里实际上有多种登录方式, 每种登录方式的参数各有不同,如:A,B,C,D 要不就定义一种结构,包含ABCD4种参数,
@@ -47,16 +60,11 @@ public class AuthController {
       return R.F(E.bad_request);
     }
 
-//    CacheUtils.put("names", "key", "val");
-//    Object o = CacheUtils.get("names", "key");
-//    log.info("o = {}", o);
-
     String clientId = req.getClientId();
-    String tenantId = req.getTenantId();
 
     // 查询用户的client和对应tenant是否合法
     Client client = clientService.getById(clientId);
-    if (client == null || !client.getTenantId().equals(tenantId)) {
+    if (client == null) {
       return R.F(E.no_authorization);
     }
 
@@ -66,26 +74,43 @@ public class AuthController {
       return R.F(E.invalid_grant_type);
     }
 
-    // 根据grantTypeReq来验证code是否正确
-    // 如果正确返回拿到的user对象
-    ILoginService loginService = switch (grantTypeReq) {
-      case "password" -> new PasswordLoginService();
-//      case "sms" -> new PasswordLoginService();
-//      case "social" -> new PasswordLoginService();
-//      case "xcx" -> new PasswordLoginService();
-//      case "email" -> new PasswordLoginService();
-      default -> throw new IllegalStateException("Unexpected value: " + grantTypeReq);
-    };
-
-    R<User> resp = loginService.login(body, client);
+    // 根据grantTypeReq来拿到正确的验证服务
+    String beanName = grantTypeReq + LOGIN_VALID_SERVICE;
+    ILoginValidService loginValidService = SpringUtils.getBean(beanName);
+    R<User> resp = loginValidService.login(body, client);
     if (resp.isFailed()) {
       return R.F(resp);
+    }
+
+    // 获得了用户的对象,开始准备构造用户的返回对象
+    User user = resp.getData();
+    if (user == null) {
+      return R.F(E.no_user);
+    }
+
+    UserResp userResp = new UserResp();
+    userResp.setId(user.getId());
+    userResp.setAvatar(user.getAvatar());
+    userResp.setNickname(user.getNickname());
+    userResp.setDescription(user.getDescription());
+    userResp.setUsername(user.getUsername());
+    userResp.setEmail(user.getEmail());
+    userResp.setPhone(user.getPhone());
+    userResp.setAddress(user.getAddress());
+    userResp.setTenantId(user.getTenantId());
+
+    List<Role> roles = roleService.getRolesByUserId(user.getId());
+    List<RoleResp> roleResps = new ArrayList<>();
+    for (Role role : roles) {
+      RoleResp roleResp = MapstructUtils.convert(role, RoleResp.class);
+      List<Menu> menus = menuService.getMenusByRoleId(role.getId());
+      roleResp.setMenus(menus);
+      roleResps.add(roleResp);
     }
 
 
 
     {
-
 //      StpUtil.login(user.getId());
 //      String tokenValue = StpUtil.getTokenInfo().getTokenValue();
 //      LoginResp loginResp = new LoginResp();
@@ -97,5 +122,43 @@ public class AuthController {
 //    String tokenValue = StpUtil.getTokenInfo().getTokenValue();
 
     return null;
+  }
+
+
+  @PostMapping("/register")
+  public R<Void> register(@RequestBody UserReq req) {
+    User user = MapstructUtils.convert(req, User.class);
+    if (user == null) {
+      return R.F(E.bad_request);
+    }
+
+    // 查询数据库是否有此用户
+    {
+      QueryWrapper<User> wrapper = new QueryWrapper<User>().eq("username", req.getUsername());
+      User dbUser = userService.getOne(wrapper);
+      if (dbUser != null) {
+        return R.F(E.user_exist);
+      }
+    }
+
+    // 检查手机号是否存在
+    {
+      QueryWrapper<User> wrapper = new QueryWrapper<User>().eq("phone", req.getPhone());
+      User dbUser = userService.getOne(wrapper);
+      if (dbUser != null) {
+        return R.F(E.user_exist_phone);
+      }
+    }
+
+    String salt = BCrypt.gensalt();
+    user.setSalt(salt);
+    String password = user.getPassword();
+    String encryptedPassword = BCrypt.hashpw(password, salt);
+    user.setPassword(encryptedPassword);
+    boolean result = userService.save(user);
+    if (!result) {
+      return R.F(E.server_error);
+    }
+    return R.OK();
   }
 }

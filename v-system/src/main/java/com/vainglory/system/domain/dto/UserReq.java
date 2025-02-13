@@ -23,6 +23,7 @@ public class UserReq extends BaseReq {
   @Email
   private String email;
 
+  @NotBlank
   @Pattern(regexp = "^1[3-9]\\d{9}$", message = "手机号格式不正确")
   private String phone;
 

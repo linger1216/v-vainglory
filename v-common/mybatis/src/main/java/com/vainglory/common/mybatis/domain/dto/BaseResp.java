@@ -30,7 +30,7 @@ public class BaseResp implements Serializable {
    * 创建部门
    * 数据权限过滤,默认不序列化,
    */
-  private Long createDept;
+  private String createDept;
 
   /**
    * 创建者

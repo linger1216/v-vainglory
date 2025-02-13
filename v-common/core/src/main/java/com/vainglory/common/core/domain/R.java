@@ -1,9 +1,13 @@
 package com.vainglory.common.core.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.vainglory.common.core.service.IErrorCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import static com.vainglory.common.core.constant.BaseErrorCode.FAILED;
+import static com.vainglory.common.core.constant.BaseErrorCode.SUCCESS;
 
 /*
   统一返回值
@@ -11,10 +15,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class R<T> {
-
-  private static final Integer SUCCESS = 0;
-  private static final Integer FAILED = 500;
-
   private int code;
   private String msg;
 
@@ -32,10 +32,12 @@ public class R<T> {
     this.msg = msg;
   }
 
+  @JsonIgnore
   public Boolean isSuccess() {
     return this.code == SUCCESS;
   }
 
+  @JsonIgnore
   public Boolean isFailed() {
     return this.code != SUCCESS;
   }
@@ -43,6 +45,7 @@ public class R<T> {
   public static <T> R<T> OK(T data) {
     return new R<>(SUCCESS, "success", data);
   }
+
   public static <T> R<T> OK() {
     return new R<>(SUCCESS, "success");
   }

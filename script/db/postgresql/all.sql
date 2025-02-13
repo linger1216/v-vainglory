@@ -16,7 +16,8 @@ create table t_api
   version     integer,
   create_time timestamp(6),
   update_time timestamp(6),
-  delete_time timestamp(6)
+  delete_time timestamp(6),
+  CONSTRAINT "idx_t_api_path_method_unique" UNIQUE ("method", "path")
 );
 comment on column t_api.id is 'id';
 comment on column t_api.name is '名称';
@@ -101,7 +102,9 @@ create table t_menu
   version     integer,
   create_time timestamp(6),
   update_time timestamp(6),
-  delete_time timestamp(6)
+  delete_time timestamp(6),
+  CONSTRAINT "idx_t_menu_component_unique" UNIQUE ("component"),
+  CONSTRAINT "idx_t_menu_path_unique" UNIQUE ("component")
 );
 comment on column t_menu.id is 'id';
 comment on column t_menu.name is '名称';
@@ -167,7 +170,8 @@ create table t_post_field
   version       integer,
   create_time   timestamp(6),
   update_time   timestamp(6),
-  delete_time   timestamp(6)
+  delete_time   timestamp(6),
+  CONSTRAINT "idx_t_post_field_entity_unique" UNIQUE ("entity")
 );
 comment on column t_post_field.id is 'id';
 comment on column t_post_field.post_id is '岗位id';
@@ -210,6 +214,7 @@ comment on column t_role.key is '角色权限字符串';
 comment on column t_role.sort is '显示顺序';
 comment on column t_role.data_scope is '数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限, 5: 本人权限）';
 comment on column t_role.status is '状态: 1正常 0禁用';
+comment on column t_role.tenant_id is '租户id';
 comment on column t_role.create_by is '创建者';
 comment on column t_role.update_by is '更新者';
 comment on column t_role.version is '版本';
@@ -328,7 +333,8 @@ create table t_user
   version     integer,
   create_time timestamp(6),
   update_time timestamp(6),
-  delete_time timestamp(6)
+  delete_time timestamp(6),
+  CONSTRAINT "idx_t_user_username_unique" UNIQUE ("username")
 );
 comment on column t_user.id is 'id';
 comment on column t_user.avatar is '头像';
@@ -438,7 +444,8 @@ create table t_tenant
   version        integer,
   create_time    timestamp(6),
   update_time    timestamp(6),
-  delete_time    timestamp(6)
+  delete_time    timestamp(6),
+  CONSTRAINT "idx_t_tenant_name_unique" UNIQUE ("name")
 );
 comment on column t_tenant.id is 'id';
 comment on column t_tenant.name is '名称';
@@ -480,7 +487,9 @@ create table t_client
     version        integer,
     create_time    timestamp(6),
     update_time    timestamp(6),
-    delete_time    timestamp(6)
+    delete_time    timestamp(6),
+    CONSTRAINT "idx_t_client_key_unique" UNIQUE ("key"),
+    CONSTRAINT "idx_t_client_secret_unique" UNIQUE ("secret")
 );
 comment on column t_client.id is 'id';
 comment on column t_client.key is '客户端key';
@@ -502,128 +511,237 @@ alter table t_client owner to postgres;
 
 
 ------------------------------------ 数据
--- 内置
--- 用户超管
+-- 租户
+truncate table t_tenant;
+insert into t_tenant(id, name, description, contact_name, contact_phone, license_number, address, domain, plan_id, expire_time, account_count, tenant_id, status, create_dept, create_by, update_by, version, create_time, update_time, delete_time)
+values
+  ('tenant:pd', '浦东新区租户', '浦东新区全部委办', '沈老师', '13800138000', null,
+   '浦东新区', null, 'plan:0', '2049-12-12 00:00:00',-1, null, 1, null, null, null, 1,
+   '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+  ('tenant:mh', '闵行租户', '闵行区全部委办', '朱老师', '13800138000', null,
+   '闵行区', null, 'plan:0', '2049-12-12 00:00:00', -1, null, 1, null, null, null, 1,
+   '2024-12-12 00:00:00', '2024-12-12 00:00:00', null);
+
+
 truncate table t_user;
 insert into t_user(id, avatar, nickname, username, description, password, salt, email, phone, address, status, tenant_id, create_dept,
                    create_by, update_by, version, create_time, update_time, delete_time)
-values ('user:0', 'http://avatar.png', 'leegohi', 'admin', '系统的内置管理用户',
-        '123456', '12345', 'eg@mail.com', '', '上海静安区', 1, 'tenant:0', 'dept:0', 'user:0', 'user:0', 1,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null);
+values
+  ('user:super:admin', null, '超管', 'lid_guan', '作者',
+   '$2a$10$g37yq/A5Oms3/lqHMxp.TOF/hmeHBz3t4LkybcipXtjUMOFL1xfWu', '$2a$10$g37yq/A5Oms3/lqHMxp.TO',
+   'lid.guan@mail.com', '13816532331', '上海静安区', 1, null, null, null, null, 1,
+   '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
 
--- 根部门
+  ('user:pd', null, '浦老师', '浦老师', '浦东新区委书记',
+   '$2a$10$g37yq/A5Oms3/lqHMxp.TOF/hmeHBz3t4LkybcipXtjUMOFL1xfWu', '$2a$10$g37yq/A5Oms3/lqHMxp.TO', null, '',
+   '', 1, 'tenant:pd', null, 'user:super:admin', 'user:super:admin', 1,
+   '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+
+  ('user:pd:zj', null, '张江镇镇长', '张江镇镇长', '浦东新区张江镇镇长',
+   '$2a$10$g37yq/A5Oms3/lqHMxp.TOF/hmeHBz3t4LkybcipXtjUMOFL1xfWu', '$2a$10$g37yq/A5Oms3/lqHMxp.TO', null, '', '', 1, 'tenant:pd',
+   'dept:pd', 'user:pd', 'user:pd', 1, '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+  ('user:pd:zj:ty', null, '田园路居委书记', '田园路居委书记', '浦东新区张江镇田园路居委书记',
+   '$2a$10$g37yq/A5Oms3/lqHMxp.TOF/hmeHBz3t4LkybcipXtjUMOFL1xfWu', '$2a$10$g37yq/A5Oms3/lqHMxp.TO', null, '', '', 1, 'tenant:pd',
+   'dept:pd', 'user:pd', 'user:pd', 1,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+  ('user:pd:zj:sq', null, '孙桥路居委书记', '孙桥路居委书记', '浦东新区张江镇孙桥路居委书记',
+   '$2a$10$g37yq/A5Oms3/lqHMxp.TOF/hmeHBz3t4LkybcipXtjUMOFL1xfWu', '$2a$10$g37yq/A5Oms3/lqHMxp.TO', null, '', '', 1, 'tenant:pd',
+   'dept:pd', 'user:pd', 'user:pd', 1,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+
+
+  ('user:pd:bc', null, '北蔡镇镇长', '北蔡镇镇长', '浦东新区北蔡镇镇长',
+   '$2a$10$g37yq/A5Oms3/lqHMxp.TOF/hmeHBz3t4LkybcipXtjUMOFL1xfWu', '$2a$10$g37yq/A5Oms3/lqHMxp.TO', null, '', '', 1, 'tenant:pd',
+   'dept:pd', 'user:pd', 'user:pd', 1, '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+  ('user:100102001', null, '钱虹南', '钱虹南', '浦东新区北蔡虹南居委会',
+   '$2a$10$g37yq/A5Oms3/lqHMxp.TOF/hmeHBz3t4LkybcipXtjUMOFL1xfWu', '$2a$10$g37yq/A5Oms3/lqHMxp.TO', null, '', '', 1, 'tenant:pd',
+   'dept:pd', 'user:pd', 'user:pd', 1, '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+  ('user:100102002', null, '周香花', '周香花', '浦东新区北蔡香花居委会',
+   '$2a$10$g37yq/A5Oms3/lqHMxp.TOF/hmeHBz3t4LkybcipXtjUMOFL1xfWu', '$2a$10$g37yq/A5Oms3/lqHMxp.TO', null, '', '', 1, 'tenant:pd',
+   'dept:pd', 'user:pd', 'user:pd', 1,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+
+  ('user:mh', null, '闵老师', '闵老师', '闵行区委书记',
+   '$2a$10$g37yq/A5Oms3/lqHMxp.TOF/hmeHBz3t4LkybcipXtjUMOFL1xfWu', '$2a$10$g37yq/A5Oms3/lqHMxp.TO', null, '',
+   '', 1, 'tenant:mh', null, 'user:super:admin', 'user:super:admin', 1,
+   '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+
+  ('user:mh:cg', null, '闵行区城市执法局局长', '闵行区城市执法局局长', '闵行区城市执法局局长',
+   '$2a$10$g37yq/A5Oms3/lqHMxp.TOF/hmeHBz3t4LkybcipXtjUMOFL1xfWu', '$2a$10$g37yq/A5Oms3/lqHMxp.TO', null, '', '', 1, 'tenant:mh',
+   'dept:mh', 'user:mh', 'user:mh', 1, '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+  ('user:mh:cg:xt', null, '闵行区城市执法局协调科科长', '闵行区城市执法局协调科科长', '闵行区城市执法局协调科科长',
+   '$2a$10$g37yq/A5Oms3/lqHMxp.TOF/hmeHBz3t4LkybcipXtjUMOFL1xfWu', '$2a$10$g37yq/A5Oms3/lqHMxp.TO', null, '', '', 1, 'tenant:mh',
+   'dept:mh', 'user:mh', 'user:mh', 1,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+  ('user:mh:cg:zf', null, '闵行区城市执法局执法科科长', '闵行区城市执法局执法科科长', '闵行区城市执法局执法科科长',
+   '$2a$10$g37yq/A5Oms3/lqHMxp.TOF/hmeHBz3t4LkybcipXtjUMOFL1xfWu', '$2a$10$g37yq/A5Oms3/lqHMxp.TO', null, '', '', 1, 'tenant:mh',
+   'dept:mh', 'user:mh', 'user:mh', 1,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+  ('user:mh:cg:jd', null, '闵行区城市执法局监督科科长', '闵行区城市执法局监督科科长', '闵行区城市执法局监督科科长',
+   '$2a$10$g37yq/A5Oms3/lqHMxp.TOF/hmeHBz3t4LkybcipXtjUMOFL1xfWu', '$2a$10$g37yq/A5Oms3/lqHMxp.TO', null, '', '', 1, 'tenant:mh',
+   'dept:mh', 'user:mh', 'user:mh', 1,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+  ('user:mh:cg:ts', null, '闵行区城市执法局投诉科科长', '闵行区城市执法局投诉科科长', '闵行区城市执法局投诉科科长',
+   '$2a$10$g37yq/A5Oms3/lqHMxp.TOF/hmeHBz3t4LkybcipXtjUMOFL1xfWu', '$2a$10$g37yq/A5Oms3/lqHMxp.TO', null, '', '', 1, 'tenant:mh',
+   'dept:mh', 'user:mh', 'user:mh', 1,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+  ('user:mh:cg:dq', null, '闵行区城市执法局党群科科长', '闵行区城市执法局党群科科长', '闵行区城市执法局党群科科长',
+   '$2a$10$g37yq/A5Oms3/lqHMxp.TOF/hmeHBz3t4LkybcipXtjUMOFL1xfWu', '$2a$10$g37yq/A5Oms3/lqHMxp.TO', null, '', '', 1, 'tenant:mh',
+   'dept:mh', 'user:mh', 'user:mh', 1,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null);
+
+
+
+-- 部门
 truncate table t_dept;
 insert into t_dept(id, name, description, parent_id, ancestors, leader_id, email, phone, sort, status, tenant_id, create_dept, create_by, update_by, version, create_time, update_time, delete_time)
-values ('dept:0', '根部门', '虚拟的部门', null, null, 'user:0', 'eg@mail.com', '', 1, 1, 'tenant:0', 'dept:0', 'user:0', 'user:0', 1,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null);
+values
+  ('dept:pd', '浦东新区', '浦东新区', null, null, 'user:pd', 'pd@email.com', '', 1, 1,
+   'tenant:pd', 'dept:pd', 'user:pd', 'user:pd', 1,
+   '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+  ('dept:pd:zj', '浦东新区张江镇', '浦东新区张江镇', null, null, 'user:pd:zj', 'pd@email.com', '', 1, 1,
+   'tenant:pd', 'dept:pd', 'user:pd', 'user:pd', 1,
+   '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+  ('dept:pd:zj:ty', '浦东新区张江镇田园路居委', '浦东新区张江镇田园路居委', null, null, 'user:pd:zj:ty', 'pd@email.com', '', 1, 1,
+   'tenant:pd', 'dept:pd', 'user:pd', 'user:pd', 1,
+   '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+  ('dept:pd:zj:sq', '浦东新区张江镇孙桥路居委', '浦东新区张江镇孙桥路居委', null, null, 'user:pd:zj:sq', 'pd@email.com', '', 1, 1,
+   'tenant:pd', 'dept:pd', 'user:pd', 'user:pd', 1,
+   '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
 
--- 根租户
-truncate table t_tenant;
-insert into t_tenant(id, name, description, contact_name, contact_phone, license_number, address, domain, plan_id, expire_time, account_count, tenant_id, status, create_dept, create_by, update_by, version, create_time, update_time, delete_time)
-values ('tenant:0', '根公司', '虚拟的根公司', 'leegohi', '', null, '上海静安区', null, 'plan:0', '9999-12-12 00:00:00', -1, 'tenant:0', 1, 'dept:0', 'user:0', 'user:0', 1,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null);
+
+  ('dept:mh', '闵行区', '闵行区', null, null, 'user:mh', 'pd@email.com', '', 1, 1,
+   'tenant:mh', 'dept:mh', 'user:mh', 'user:mh', 1,
+   '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+  ('dept:mh:cg', '闵行区城市执法局', '闵行区城市执法局', 'dept:mh', null, 'user:mh:cg', 'pd@email.com', '', 1, 1,
+   'tenant:mh', 'dept:mh', 'user:mh', 'user:mh', 1,
+   '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+  ('dept:mh:cg:xt', '闵行区城市执法局协调科', '闵行区城市执法局协调科', 'dept:mh', null, 'user:mh:cg:xt', 'pd@email.com', '', 1, 1,
+   'tenant:mh', 'dept:mh', 'user:mh', 'user:mh', 1,
+   '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+  ('dept:mh:cg:zf', '闵行区城市执法局执法科', '闵行区城市执法局执法科', 'dept:mh', null, 'user:mh:cg:zf', 'pd@email.com', '', 1, 1,
+   'tenant:mh', 'dept:mh', 'user:mh', 'user:mh', 1,
+   '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+  ('dept:mh:cg:jd', '闵行区城市执法局监督科', '闵行区城市执法局监督科', 'dept:mh', null, 'user:mh:cg:jd', 'pd@email.com', '', 1, 1,
+   'tenant:mh', 'dept:mh', 'user:mh', 'user:mh', 1,
+   '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+  ('dept:mh:cg:ts', '闵行区城市执法局投诉科', '闵行区城市执法局投诉科', 'dept:mh', null, 'user:mh:cg:ts', 'pd@email.com', '', 1, 1,
+   'tenant:mh', 'dept:mh', 'user:mh', 'user:mh', 1,
+   '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+  ('dept:mh:cg:dq', '闵行区城市执法局党群科', '闵行区城市执法局党群科', 'dept:mh', null, 'user:mh:cg:dq', 'pd@email.com', '', 1, 1,
+   'tenant:mh', 'dept:mh', 'user:mh', 'user:mh', 1,
+   '2024-12-12 00:00:00', '2024-12-12 00:00:00', null);
+
 
 -- 角色
 truncate table t_role;
 insert into t_role(id, name, description, key, sort, data_scope, status, tenant_id, create_dept, create_by, update_by, version, create_time, update_time, delete_time)
-values ('role:0', '超级管理员', '超级管理员', 'admin', 1, '1', 1, 'tenant:0', 'dept:0', 'user:0', 'user:0', 1,
+values ('role:super:admin', '超级管理员', '超级管理员', 'admin', 1, '1', 1,
+        null, null, null, null, 1,
+        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('role:pd:admin', '浦东管理员', '浦东管理员', 'pd:admin', 1, '1', 1,
+        'tenant:pd', null, 'user:super:admin', 'user:super:admin', 1,
+        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('role:mh:admin', '闵行管理员', '闵行管理员', 'mh:admin', 1, '1', 1,
+        'tenant:mh', null, 'user:super:admin', 'user:super:admin', 1,
+        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null);
+
+truncate table t_role_user;
+insert into t_role_user(id, role_id, user_id, status, tenant_id, create_dept, create_by, update_by, version, create_time, update_time, delete_time)
+values ('role_user:0', 'role:pd:admin', 'user:pd', 1, 'tenant:pd', null,
+        'user:super:admin', 'user:super:admin', 1,
+        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('role_user:1', 'role:mh:admin', 'user:mh', 1, 'tenant:mh', null,
+        'user:super:admin', 'user:super:admin', 1,
         '2024-12-12 00:00:00', '2024-12-12 00:00:00', null);
 
 -- 岗位
 truncate table t_post;
 insert into t_post(id, name, description, dept_id, sort, status, tenant_id, create_dept, create_by, update_by, version, create_time, update_time, delete_time)
-values ('post:0', '超管', '超级管理员', 'dept:0', 1, 1, 'tenant:0', 'dept:0', 'user:0', 'user:0', 1,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null);
+values ('post:pd:dev', '研发', '研发', 'dept:pd', 1, 1,
+        'tenant:pd', 'dept:pd', 'user:pd', 'user:pd', 1,
+        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('post:pd:sale', '销售', '销售', 'dept:pd', 1, 1,
+        'tenant:pd', 'dept:pd', 'user:pd', 'user:pd', 1,
+        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('post:pd:manager', '经理', '经理', 'dept:pd', 1, 1,
+        'tenant:pd', 'dept:pd', 'user:pd', 'user:pd', 1,
+        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
 
+       ('post:mh:dev', '研发', '研发', 'dept:mh', 1, 1,
+        'tenant:mh', 'dept:mh', 'user:mh', 'user:mh', 1,
+        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('post:mh:sale', '销售', '销售', 'dept:mh', 1, 1,
+        'tenant:mh', 'dept:mh', 'user:mh', 'user:mh', 1,
+        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('post:mh:manager', '经理', '经理', 'dept:mh', 1, 1,
+        'tenant:mh', 'dept:mh', 'user:mh', 'user:mh', 1,
+        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null);
 
 -- 应用
 truncate table t_client;
 insert into t_client(id, key, secret, grant_type, device_type, timeout, active_timeout, tenant_id, status, create_dept, create_by, update_by, version, create_time, update_time, delete_time)
-values ('client:0', 'client:key', 'client:secret', 'password,sms,social', 'pc', 2592000, -1, 'tenant:0', 1, 'dept:0', 'user:0', 'user:0', 1,
+values ('client:pd:pc', 'client:pd:key', 'client:pd:secret', 'password,sms,social', 'pc', 2592000, -1,
+        'tenant:pd', 1, null, 'user:super:admin', 'user:super:admin', 1,
+        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('client:mh:pc', 'client:mh:key', 'client:mh:secret', 'password,sms,social', 'pc', 2592000, -1,
+        'tenant:mh', 1, null, 'user:super:admin', 'user:super:admin', 1,
         '2024-12-12 00:00:00', '2024-12-12 00:00:00', null);
 
 
--- 应用测试
--- 浦东新区 dept:100 tenant:100  陈近南:user:100
--- 张江 dept:100101 张三江:user:100101
--- 田园路居委会 dept:100101001 赵田园:user:100101001
--- 孙桥路居委会 dept:100101002 孙桥:user:100101002
--- 北蔡 dept:100102 李北蔡:user:100102
--- 虹南居委会  dept:100102001  钱虹南:user:100102001
--- 香花居委会  dept:100102002  周香花:user:100102002
--- 陆家嘴 dept:100103 王家嘴:user:100103
--- 梅园一村居委会 dept:100103001 吴梅园:user:100103001
--- 福山居委会    dept:100103002 郑福山:user:100103002
+-- 菜单
+truncate table t_menu;
+insert into t_menu(id, name, icon, component, path, query_param, parent_id, keep_alive, is_external, type, perms, sort, status,
+                   tenant_id, create_dept, create_by, update_by, version, create_time, update_time, delete_time)
+values ('menu:1', '系统管理', 'el-icon-setting', null, 'system', null, null, 1, 0, 0, null, 1,
+        1, null, null, 'user:super:admin', 'user:super:admin',0,
+      '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
 
--- 租户
-insert into t_tenant(id, name, description, contact_name, contact_phone, license_number, address, domain, plan_id, expire_time, account_count, tenant_id, status, create_dept, create_by, update_by, version, create_time, update_time, delete_time)
-values ('tenant:100', '浦东新区', '浦东新区全部委办', '陈近南', '', null, '浦东新区', null, 'plan:0', '2049-12-12 00:00:00', -1, 'tenant:0', 1, 'dept:0', 'user:0', 'user:0', 1,
+       ('menu:1:1', '用户管理', 'el-icon-setting', null, 'system/user', null, 'menu:1', 1, 0, 1, null, 1,
+        1, null, null, 'user:super:admin', 'user:super:admin',0,
+        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('menu:1:2', '角色管理', 'el-icon-setting', null, 'system/role', null, 'menu:1', 1, 0, 1, null, 2,
+        1, null, null, 'user:super:admin', 'user:super:admin',0,
+        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('menu:1:3', '部门管理', 'el-icon-setting', null, 'system/dept', null, 'menu:1', 1, 0, 1, null, 3,
+        1, null, null, 'user:super:admin', 'user:super:admin',0,
+        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('menu:1:4', '字典管理', 'el-icon-setting', null, 'system/dict', null, 'menu:1', 1, 0, 1, null, 4,
+        1, null, null, 'user:super:admin', 'user:super:admin',0,
+        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('menu:1:5', '菜单管理', 'el-icon-setting', null, 'system/menu', null, 'menu:1', 1, 0, 1, null, 4,
+        1, null, null, 'user:super:admin', 'user:super:admin',0,
+        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('menu:1:6', '岗位管理', 'el-icon-setting', null, 'system/post', null, 'menu:1', 1, 0, 1, null, 4,
+        1, null, null, 'user:super:admin', 'user:super:admin',0,
+        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('menu:1:7', '参数管理', 'el-icon-setting', null, 'system/para', null, 'menu:1', 1, 0, 1, null, 4,
+        1, null, null, 'user:super:admin', 'user:super:admin',0,
+        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('menu:1:8', '日志管理', 'el-icon-setting', null, 'system/log', null, 'menu:1', 1, 0, 0, null, 4,
+        1, null, null, 'user:super:admin', 'user:super:admin',0,
+        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('menu:1:8:1', '登录日志', 'el-icon-setting', null, 'system/log/login', null, 'menu:1', 1, 0, 1, null, 4,
+        1, null, null, 'user:super:admin', 'user:super:admin',0,
+        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('menu:1:8:2', '操作日志', 'el-icon-setting', null, 'system/log/oper', null, 'menu:1', 1, 0, 1, null, 4,
+        1, null, null, 'user:super:admin', 'user:super:admin',0,
+        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('menu:1:9', '文件管理', 'el-icon-setting', null, 'system/file', null, 'menu:1', 1, 0, 1, null, 4,
+        1, null, null, 'user:super:admin', 'user:super:admin',0,
+        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('menu:1:10', '客户端管理', 'el-icon-setting', null, 'system/client', null, 'menu:1', 1, 0, 1, null, 4,
+        1, null, null, 'user:super:admin', 'user:super:admin',0,
+        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+
+       ('menu:2', '租户管理', 'el-icon-setting', null, 'system/tenant', null, null, 1, 0, 0, null, 4,
+        1, null, null, 'user:super:admin', 'user:super:admin',0,
+        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('menu:2:1', '租户管理', 'el-icon-setting', null, 'system/tenant/tenant', null, 'menu:2', 1, 0, 1, null, 4,
+        1, null, null, 'user:super:admin', 'user:super:admin',0,
+        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('menu:2:2', '套餐管理', 'el-icon-setting', null, 'system/tenant/package', null, 'menu:2', 1, 0, 1, null, 4,
+        1, null, null, 'user:super:admin', 'user:super:admin',0,
+        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+
+       ('menu:3', '系统监控', 'el-icon-setting', null, 'system/monitor', null, null, 1, 0, 0, null, 4,
+        1, null, null, 'user:super:admin', 'user:super:admin',0,
+        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('menu:3:1', '在线用户', 'el-icon-setting', null, 'system/monitor/online', null, 'menu:3', 1, 0, 1, null, 4,
+        1, null, null, 'user:super:admin', 'user:super:admin',0,
         '2024-12-12 00:00:00', '2024-12-12 00:00:00', null);
 
--- 部门
-insert into t_dept(id, name, description, parent_id, ancestors, leader_id, email, phone, sort, status, tenant_id, create_dept, create_by, update_by, version, create_time, update_time, delete_time)
-values ('dept:100', '浦东新区', '浦东新区', null, null, 'user:100', 'eg@mail.com', '', 1, 1, 'tenant:100', 'dept:100', 'user:100', 'user:100', 1,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-       ('dept:100101', '浦东新区张江', '浦东新区张江', 'dept:100', 'dept:100', 'user:100101', 'eg@mail.com', '', 1, 1, 'tenant:100', 'dept:100101', 'user:100', 'user:100', 1,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-       ('dept:100101001', '浦东新区张江田园路居委会', '浦东新区张江田园路居委会', 'dept:100101', 'dept:100,dept:100101', 'user:100101001', 'eg@mail.com', '', 1, 1, 'tenant:100', 'dept:100101001', 'user:100', 'user:100', 1,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-       ('dept:100101002', '浦东新区张江孙桥路居委会', '浦东新区张江孙桥路居委会', 'dept:100101', 'dept:100,dept:100101', 'user:100101002', 'eg@mail.com', '', 1, 1, 'tenant:100', 'dept:100101002', 'user:100', 'user:100', 1,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-
-       ('dept:100102', '浦东新区北蔡', '浦东新区北蔡', 'dept:100', 'dept:100', 'user:100102', 'eg@mail.com', '', 1, 1, 'tenant:100', 'dept:100102', 'user:100', 'user:100', 1,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-       ('dept:100102001', '浦东新区北蔡虹南居委会', '浦东新区北蔡虹南居委会', 'dept:100102', 'dept:100,dept:100102', 'user:100102001', 'eg@mail.com', '', 1, 1, 'tenant:100', 'dept:100102001', 'user:100', 'user:100', 1,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-       ('dept:100102002', '浦东新区北蔡香花居委会', '浦东新区北蔡香花居委会', 'dept:100102', 'dept:100,dept:100102', 'user:100102002', 'eg@mail.com', '', 1, 1, 'tenant:100', 'dept:100102002', 'user:100', 'user:100', 1,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-
-
-       ('dept:100103', '浦东新区陆家嘴', '浦东新区陆家嘴', 'dept:100', 'dept:100', 'user:100103', 'eg@mail.com', '', 1, 1, 'tenant:100', 'dept:100103', 'user:100', 'user:100', 1,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-       ('dept:100103001', '浦东新区田陆家嘴梅园一村居委会', '浦东新区田陆家嘴梅园一村居委会', 'dept:100103', 'dept:100,dept:100103', 'user:100103001', 'eg@mail.com', '', 1, 1, 'tenant:100', 'dept:100103001', 'user:100', 'user:100', 1,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-       ('dept:100103002', '浦东新区田陆家嘴福山居委会', '浦东新区田陆家嘴福山居委会', 'dept:100103', 'dept:100,dept:100103', 'user:100103002', 'eg@mail.com', '', 1, 1, 'tenant:100', 'dept:100103002', 'user:100', 'user:100', 1,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null);
-
-
--- 用户
-insert into t_user(id, avatar, nickname, username, description, password, salt, email, phone, address, status, tenant_id, create_dept,
-                   create_by, update_by, version, create_time, update_time, delete_time)
-values ('user:100', 'http://avatar.png', '陈近南', '陈近南', '浦东新区',
-        '123456', '12345', 'eg@mail.com', '', '', 1, 'tenant:100', 'dept:100', 'user:100', 'user:100', 1,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-
-       ('user:100101', 'http://avatar.png', '张三江', '张三江', '浦东新区张江',
-        '123456', '12345', 'eg@mail.com', '', '', 1, 'tenant:100', 'dept:100101', 'user:100', 'user:100', 1,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-       ('user:100101001', 'http://avatar.png', '赵田园', '赵田园', '浦东新区张江田园路居委会',
-        '123456', '12345', 'eg@mail.com', '', '', 1, 'tenant:100', 'dept:100101001', 'user:100', 'user:100', 1,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-       ('user:100101002', 'http://avatar.png', '孙桥', '孙桥', '浦东新区张江孙桥',
-        '123456', '12345', 'eg@mail.com', '', '', 1, 'tenant:100', 'dept:100101002', 'user:100', 'user:100', 1,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-
-
-       ('user:100102', 'http://avatar.png', '李北蔡', '李北蔡', '浦东新区北蔡',
-        '123456', '12345', 'eg@mail.com', '', '', 1, 'tenant:100', 'dept:100102', 'user:100', 'user:100', 1,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-       ('user:100102001', 'http://avatar.png', '钱虹南', '钱虹南', '浦东新区北蔡虹南居委会',
-        '123456', '12345', 'eg@mail.com', '', '', 1, 'tenant:100', 'dept:100102001', 'user:100', 'user:100', 1,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-       ('user:100102002', 'http://avatar.png', '周香花', '周香花', '浦东新区北蔡香花居委会',
-        '123456', '12345', 'eg@mail.com', '', '', 1, 'tenant:100', 'dept:100102002', 'user:100', 'user:100', 1,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-
-
-       ('user:100103', 'http://avatar.png', '王家嘴', '王家嘴', '浦东新区陆家嘴',
-        '123456', '12345', 'eg@mail.com', '', '', 1, 'tenant:100', 'dept:100103', 'user:100', 'user:100', 1,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-       ('user:100103001', 'http://avatar.png', '吴梅园', '吴梅园', '浦东新区陆家嘴梅园一村居委会',
-        '123456', '12345', 'eg@mail.com', '', '', 1, 'tenant:100', 'dept:100103001', 'user:100', 'user:100', 1,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-       ('user:100103002', 'http://avatar.png', '郑福山', '郑福山', '浦东新区陆家嘴福山居委会',
-        '123456', '12345', 'eg@mail.com', '', '', 1, 'tenant:100', 'dept:100103002', 'user:100', 'user:100', 1,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null);
 
 

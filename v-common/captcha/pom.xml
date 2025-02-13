@@ -24,9 +24,11 @@
 
   <dependencies>
     <dependency>
-      <groupId>cn.hutool</groupId>
-      <artifactId>hutool-all</artifactId>
-      <version>${hutool.version}</version>
+      <groupId>com.jellyfish</groupId>
+      <artifactId>v-common-core</artifactId>
+      <version>${revision}</version>
+      <scope>compile</scope>
     </dependency>
+
   </dependencies>
 </project>
