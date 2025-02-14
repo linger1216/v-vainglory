@@ -2,6 +2,9 @@ package com.vainglory.system.controller;
 
 
 import cn.dev33.satoken.secure.BCrypt;
+import cn.dev33.satoken.stp.SaLoginConfig;
+import cn.dev33.satoken.stp.SaTokenInfo;
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.vainglory.common.core.domain.R;
 import com.vainglory.common.core.utils.JsonUtils;
@@ -82,6 +85,19 @@ public class AuthController {
       return R.F(resp);
     }
 
+    // 登录通过
+    User user = resp.getData();
+    if (user == null) {
+      return R.F(E.no_user);
+    }
+    StpUtil.login(user.getId());
+    SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
+
+    LoginResp ret = new LoginResp();
+    ret.setAccessToken(tokenInfo.getTokenValue());
+    ret.setExpireIn((int) tokenInfo.getTokenTimeout());
+
+    /*
     // 获得了用户的对象,开始准备构造用户的返回对象
     User user = resp.getData();
     if (user == null) {
@@ -99,29 +115,31 @@ public class AuthController {
     userResp.setAddress(user.getAddress());
     userResp.setTenantId(user.getTenantId());
 
+
+    // 用户所属部门
+    List<Dept> depts = deptService.getDeptsByUserId(user.getId());
+    if (depts != null && !depts.isEmpty()) {
+      userResp.setDepts(depts);
+    }
+
+    // 用户所属权限
     List<Role> roles = roleService.getRolesByUserId(user.getId());
     List<RoleResp> roleResps = new ArrayList<>();
     for (Role role : roles) {
       RoleResp roleResp = MapstructUtils.convert(role, RoleResp.class);
+      assert roleResp != null;
       List<Menu> menus = menuService.getMenusByRoleId(role.getId());
-      roleResp.setMenus(menus);
+      if (menus != null && !menus.isEmpty()) {
+        roleResp.setMenus(menus);
+      }
       roleResps.add(roleResp);
     }
 
+    userResp.setRoles(roleResps);
+    return R.OK(userResp);
 
-
-    {
-//      StpUtil.login(user.getId());
-//      String tokenValue = StpUtil.getTokenInfo().getTokenValue();
-//      LoginResp loginResp = new LoginResp();
-//      loginResp.setToken(tokenValue);
-//      return loginResp;
-    }
-
-    //    StpUtil.login(10001);
-//    String tokenValue = StpUtil.getTokenInfo().getTokenValue();
-
-    return null;
+     */
+    return R.OK(ret);
   }
 
 

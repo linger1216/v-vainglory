@@ -39,7 +39,7 @@
       <include refid="Menu_Column" />
       from t_menu
       where id in (
-        select role_id from t_role_menu where user_id = #{roleId}
+        select role_id from t_role_menu where menu_id = #{roleId}
       )
     </select>
 </mapper>

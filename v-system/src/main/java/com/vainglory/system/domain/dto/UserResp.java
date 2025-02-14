@@ -39,7 +39,7 @@ public class UserResp extends BaseResp {
   /**
    * 用户所属多个部门
    */
-  private List<DeptResp> depts;
+  private List<Dept> depts;
 
   /**
    * 用户所属多个角色

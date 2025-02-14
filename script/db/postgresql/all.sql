@@ -640,10 +640,13 @@ values ('role:super:admin', '超级管理员', '超级管理员', 'admin', 1, '1
 
 truncate table t_role_user;
 insert into t_role_user(id, role_id, user_id, status, tenant_id, create_dept, create_by, update_by, version, create_time, update_time, delete_time)
-values ('role_user:0', 'role:pd:admin', 'user:pd', 1, 'tenant:pd', null,
+values('role_user:0', 'role:super:admin', 'user:super:admin', 1, null, null,
+       'user:super:admin', 'user:super:admin', 1,
+       '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+  ('role_user:1', 'role:pd:admin', 'user:pd', 1, 'tenant:pd', null,
         'user:super:admin', 'user:super:admin', 1,
         '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-       ('role_user:1', 'role:mh:admin', 'user:mh', 1, 'tenant:mh', null,
+       ('role_user:2', 'role:mh:admin', 'user:mh', 1, 'tenant:mh', null,
         'user:super:admin', 'user:super:admin', 1,
         '2024-12-12 00:00:00', '2024-12-12 00:00:00', null);
 
@@ -673,7 +676,10 @@ values ('post:pd:dev', '研发', '研发', 'dept:pd', 1, 1,
 -- 应用
 truncate table t_client;
 insert into t_client(id, key, secret, grant_type, device_type, timeout, active_timeout, tenant_id, status, create_dept, create_by, update_by, version, create_time, update_time, delete_time)
-values ('client:pd:pc', 'client:pd:key', 'client:pd:secret', 'password,sms,social', 'pc', 2592000, -1,
+values('client:super:admin', 'client:super:key', 'client:super:secret', 'password,sms,social', 'pc', 2592000, -1,
+       null, 1, null, 'user:super:admin', 'user:super:admin', 1,
+       '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+  ('client:pd:pc', 'client:pd:key', 'client:pd:secret', 'password,sms,social', 'pc', 2592000, -1,
         'tenant:pd', 1, null, 'user:super:admin', 'user:super:admin', 1,
         '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
        ('client:mh:pc', 'client:mh:key', 'client:mh:secret', 'password,sms,social', 'pc', 2592000, -1,
@@ -743,5 +749,26 @@ values ('menu:1', '系统管理', 'el-icon-setting', null, 'system', null, null,
         1, null, null, 'user:super:admin', 'user:super:admin',0,
         '2024-12-12 00:00:00', '2024-12-12 00:00:00', null);
 
+
+truncate table t_role_menu;
+insert into t_role_menu values
+('role_menu:1', 'role:super:admin', 'menu:1', 1, null, null, 'user:super:admin', 'user:super:admin',0, '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+('role_menu:2', 'role:super:admin', 'menu:1:1', 1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+('role_menu:3', 'role:super:admin', 'menu:1:2', 1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+('role_menu:4', 'role:super:admin', 'menu:1:3', 1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+('role_menu:5', 'role:super:admin', 'menu:1:4', 1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+('role_menu:6', 'role:super:admin', 'menu:1:5', 1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+('role_menu:7', 'role:super:admin', 'menu:1:6', 1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+('role_menu:8', 'role:super:admin', 'menu:1:7', 1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+('role_menu:9', 'role:super:admin', 'menu:1:8', 1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+('role_menu:10', 'role:super:admin', 'menu:1:8:1', 1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+('role_menu:11', 'role:super:admin', 'menu:1:8:2', 1, null, null, 'user:super:admin', 'user:super:admin',0, '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+('role_menu:12', 'role:super:admin', 'menu:1:9', 1, null, null, 'user:super:admin', 'user:super:admin',0, '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+('role_menu:13', 'role:super:admin', 'menu:1:10', 1, null, null, 'user:super:admin', 'user:super:admin',0, '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+('role_menu:14', 'role:super:admin', 'menu:2', 1, null, null, 'user:super:admin', 'user:super:admin',0, '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+('role_menu:15', 'role:super:admin', 'menu:2:1', 1, null, null, 'user:super:admin', 'user:super:admin',0, '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+('role_menu:16', 'role:super:admin', 'menu:2:2', 1, null, null, 'user:super:admin', 'user:super:admin',0, '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+('role_menu:17', 'role:super:admin', 'menu:3', 1, null, null, 'user:super:admin', 'user:super:admin',0, '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+('role_menu:18', 'role:super:admin', 'menu:3:1', 1, null, null, 'user:super:admin', 'user:super:admin',0, '2024-12-12 00:00:00', '2024-12-12 00:00:00', null);
 
 

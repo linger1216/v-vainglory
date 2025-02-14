@@ -25,10 +25,18 @@
             <result property="deleteTime" column="delete_time" />
     </resultMap>
 
-    <sql id="Base_Column_List">
+    <sql id="Dept_Columns">
         id,name,description,parent_id,ancestors,leader_id,
         email,phone,sort,status,tenant_id,
         create_dept,create_by,update_by,version,create_time,
         update_time,delete_time
     </sql>
+  <select id="getDeptsByUserId" resultType="com.vainglory.system.domain.Dept" parameterType="java.lang.String">
+    select
+    <include refid="Dept_Columns" />
+    from t_dept
+    where id in (
+    select dept_id from t_user_dept where user_id = #{userId}
+    )
+  </select>
 </mapper>

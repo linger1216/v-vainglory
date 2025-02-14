@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.vainglory.system.domain.Dept;
 import com.vainglory.system.service.IDeptService;
 import com.vainglory.system.mapper.DeptMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,9 +18,11 @@ import java.util.List;
 public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept>
     implements IDeptService {
 
+  @Autowired
+  private DeptMapper deptMapper;
   @Override
   public List<Dept> getDeptsByUserId(String userId) {
-    return null;
+    return deptMapper.getDeptsByUserId(userId);
   }
 }
 
