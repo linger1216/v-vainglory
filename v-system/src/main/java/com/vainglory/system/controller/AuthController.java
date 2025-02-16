@@ -2,7 +2,6 @@ package com.vainglory.system.controller;
 
 
 import cn.dev33.satoken.secure.BCrypt;
-import cn.dev33.satoken.stp.SaLoginConfig;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -23,11 +22,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.sql.Wrapper;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 import static com.vainglory.system.service.ILoginValidService.LOGIN_VALID_SERVICE;
 
