@@ -42,8 +42,9 @@ public class MyBatisPlusConfig {
     // 防止全表更新与删除
     interceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
 
+    // TODO: 后续在考虑留不留
     // 全局Status过滤
-    interceptor.addInnerInterceptor(new StatusInterceptor());
+    // interceptor.addInnerInterceptor(new StatusInterceptor());
     return interceptor;
   }
 

@@ -90,49 +90,8 @@ public class AuthController {
     LoginResp ret = new LoginResp();
     ret.setAccessToken(tokenInfo.getTokenValue());
     ret.setExpireIn((int) tokenInfo.getTokenTimeout());
+    ret.setUserId(user.getId());
 
-    /*
-    // 获得了用户的对象,开始准备构造用户的返回对象
-    User user = resp.getData();
-    if (user == null) {
-      return R.F(E.no_user);
-    }
-
-    UserResp userResp = new UserResp();
-    userResp.setId(user.getId());
-    userResp.setAvatar(user.getAvatar());
-    userResp.setNickname(user.getNickname());
-    userResp.setDescription(user.getDescription());
-    userResp.setUsername(user.getUsername());
-    userResp.setEmail(user.getEmail());
-    userResp.setPhone(user.getPhone());
-    userResp.setAddress(user.getAddress());
-    userResp.setTenantId(user.getTenantId());
-
-
-    // 用户所属部门
-    List<Dept> depts = deptService.getDeptsByUserId(user.getId());
-    if (depts != null && !depts.isEmpty()) {
-      userResp.setDepts(depts);
-    }
-
-    // 用户所属权限
-    List<Role> roles = roleService.getRolesByUserId(user.getId());
-    List<RoleResp> roleResps = new ArrayList<>();
-    for (Role role : roles) {
-      RoleResp roleResp = MapstructUtils.convert(role, RoleResp.class);
-      assert roleResp != null;
-      List<Menu> menus = menuService.getMenusByRoleId(role.getId());
-      if (menus != null && !menus.isEmpty()) {
-        roleResp.setMenus(menus);
-      }
-      roleResps.add(roleResp);
-    }
-
-    userResp.setRoles(roleResps);
-    return R.OK(userResp);
-
-     */
     return R.OK(ret);
   }
 

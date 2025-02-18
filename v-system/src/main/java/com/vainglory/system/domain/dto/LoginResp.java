@@ -6,6 +6,10 @@ import lombok.Data;
 @Data
 
 public class LoginResp {
+
+
+  private String userId;
+
   /**
    * 授权令牌
    */

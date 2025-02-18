@@ -19,10 +19,10 @@ public class InjectMetaObjectHandler implements MetaObjectHandler {
     this.strictInsertFill(metaObject, "createTime", Date.class, date);
     this.strictInsertFill(metaObject, "updateTime", Date.class, date);
 
-    Object status = getFieldValByName("status", metaObject);
-    if (null == status) {
-      this.strictInsertFill(metaObject, "status", Integer.class, Status.ENABLE.getCode());
-    }
+//    Object status = getFieldValByName("status", metaObject);
+//    if (null == status) {
+//      this.strictInsertFill(metaObject, "status", Integer.class, Status.ENABLE.getCode());
+//    }
   }
 
   @Override

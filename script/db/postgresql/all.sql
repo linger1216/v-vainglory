@@ -84,6 +84,7 @@ create table t_menu
 (
   id          text not null primary key,
   name        text,
+  title       text,
   icon        text,
   component   text,
   path        text,
@@ -107,7 +108,8 @@ create table t_menu
   CONSTRAINT "idx_t_menu_path_unique" UNIQUE ("component")
 );
 comment on column t_menu.id is 'id';
-comment on column t_menu.name is '名称';
+comment on column t_menu.name is '菜单名称（英文，主要是用来拼接路径所用）';
+comment on column t_menu.title is '菜单标题';
 comment on column t_menu.icon is '图标';
 comment on column t_menu.component is '对应前端组件';
 comment on column t_menu.path is '路由地址';
@@ -157,8 +159,7 @@ alter table t_post owner to postgres;
 drop table if exists t_post_field;
 create table t_post_field
 (
-  id            text not null
-    primary key,
+  id            text not null primary key,
   post_id       text,
   entity        text,
   entity_fields text[],
@@ -689,65 +690,26 @@ values('client:super:admin', 'client:super:key', 'client:super:secret', 'passwor
 
 -- 菜单
 truncate table t_menu;
-insert into t_menu(id, name, icon, component, path, query_param, parent_id, keep_alive, is_external, type, perms, sort, status,
+insert into t_menu(id, title, name, icon, component, path, query_param, parent_id, keep_alive, is_external, type, perms, sort, status,
                    tenant_id, create_dept, create_by, update_by, version, create_time, update_time, delete_time)
-values ('menu:1', '系统管理', 'el-icon-setting', null, 'system', null, null, 1, 0, 0, null, 1,
-        1, null, null, 'user:super:admin', 'user:super:admin',0,
-      '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-
-       ('menu:1:1', '用户管理', 'el-icon-setting', null, 'system/user', null, 'menu:1', 1, 0, 1, null, 1,
-        1, null, null, 'user:super:admin', 'user:super:admin',0,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-       ('menu:1:2', '角色管理', 'el-icon-setting', null, 'system/role', null, 'menu:1', 1, 0, 1, null, 2,
-        1, null, null, 'user:super:admin', 'user:super:admin',0,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-       ('menu:1:3', '部门管理', 'el-icon-setting', null, 'system/dept', null, 'menu:1', 1, 0, 1, null, 3,
-        1, null, null, 'user:super:admin', 'user:super:admin',0,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-       ('menu:1:4', '字典管理', 'el-icon-setting', null, 'system/dict', null, 'menu:1', 1, 0, 1, null, 4,
-        1, null, null, 'user:super:admin', 'user:super:admin',0,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-       ('menu:1:5', '菜单管理', 'el-icon-setting', null, 'system/menu', null, 'menu:1', 1, 0, 1, null, 4,
-        1, null, null, 'user:super:admin', 'user:super:admin',0,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-       ('menu:1:6', '岗位管理', 'el-icon-setting', null, 'system/post', null, 'menu:1', 1, 0, 1, null, 4,
-        1, null, null, 'user:super:admin', 'user:super:admin',0,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-       ('menu:1:7', '参数管理', 'el-icon-setting', null, 'system/para', null, 'menu:1', 1, 0, 1, null, 4,
-        1, null, null, 'user:super:admin', 'user:super:admin',0,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-       ('menu:1:8', '日志管理', 'el-icon-setting', null, 'system/log', null, 'menu:1', 1, 0, 0, null, 4,
-        1, null, null, 'user:super:admin', 'user:super:admin',0,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-       ('menu:1:8:1', '登录日志', 'el-icon-setting', null, 'system/log/login', null, 'menu:1', 1, 0, 1, null, 4,
-        1, null, null, 'user:super:admin', 'user:super:admin',0,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-       ('menu:1:8:2', '操作日志', 'el-icon-setting', null, 'system/log/oper', null, 'menu:1', 1, 0, 1, null, 4,
-        1, null, null, 'user:super:admin', 'user:super:admin',0,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-       ('menu:1:9', '文件管理', 'el-icon-setting', null, 'system/file', null, 'menu:1', 1, 0, 1, null, 4,
-        1, null, null, 'user:super:admin', 'user:super:admin',0,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-       ('menu:1:10', '客户端管理', 'el-icon-setting', null, 'system/client', null, 'menu:1', 1, 0, 1, null, 4,
-        1, null, null, 'user:super:admin', 'user:super:admin',0,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-
-       ('menu:2', '租户管理', 'el-icon-setting', null, 'system/tenant', null, null, 1, 0, 0, null, 4,
-        1, null, null, 'user:super:admin', 'user:super:admin',0,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-       ('menu:2:1', '租户管理', 'el-icon-setting', null, 'system/tenant/tenant', null, 'menu:2', 1, 0, 1, null, 4,
-        1, null, null, 'user:super:admin', 'user:super:admin',0,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-       ('menu:2:2', '套餐管理', 'el-icon-setting', null, 'system/tenant/package', null, 'menu:2', 1, 0, 1, null, 4,
-        1, null, null, 'user:super:admin', 'user:super:admin',0,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-
-       ('menu:3', '系统监控', 'el-icon-setting', null, 'system/monitor', null, null, 1, 0, 0, null, 4,
-        1, null, null, 'user:super:admin', 'user:super:admin',0,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-       ('menu:3:1', '在线用户', 'el-icon-setting', null, 'system/monitor/online', null, 'menu:3', 1, 0, 1, null, 4,
-        1, null, null, 'user:super:admin', 'user:super:admin',0,
-        '2024-12-12 00:00:00', '2024-12-12 00:00:00', null);
+values ('menu:1', '系统管理', 'system', 'el-icon-setting', null, 'system', null, null, 1, 0, 0, null, 1,1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('menu:1:1', '用户管理', 'user', 'el-icon-setting', null, 'system/user', null, 'menu:1', 1, 0, 1, null, 100,1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('menu:1:2', '角色管理', 'role','el-icon-setting', null, 'system/role', null, 'menu:1', 1, 0, 1, null, 101,1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('menu:1:3', '部门管理', 'dept','el-icon-setting', null, 'system/dept', null, 'menu:1', 1, 0, 1, null, 102,1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('menu:1:4', '字典管理', 'dict','el-icon-setting', null, 'system/dict', null, 'menu:1', 1, 0, 1, null, 103,1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('menu:1:5', '菜单管理', 'menu','el-icon-setting', null, 'system/menu', null, 'menu:1', 1, 0, 1, null, 104,1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('menu:1:6', '岗位管理', 'post','el-icon-setting', null, 'system/post', null, 'menu:1', 1, 0, 1, null, 105,1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('menu:1:7', '参数管理', 'parameter','el-icon-setting', null, 'system/para', null, 'menu:1', 1, 0, 1, null, 106,1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('menu:4', '日志管理', 'log','el-icon-setting', null, 'system/log', null, null, 1, 0, 0, null, 107,1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('menu:4:1', '登录日志', 'login','el-icon-setting', null, 'system/log/login', null, 'menu:4', 1, 0, 1, null, 108,1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('menu:4:2', '操作日志', 'operator','el-icon-setting', null, 'system/log/oper', null, 'menu:4', 1, 0, 1, null, 109,1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('menu:1:9', '文件管理', 'file','el-icon-setting', null, 'system/file', null, 'menu:1', 1, 0, 1, null, 110,1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('menu:1:10', '客户端管理', 'client','el-icon-setting', null, 'system/client', null, 'menu:1', 1, 0, 1, null, 111,1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('menu:2', '租户管理', 'tenant', 'el-icon-setting', null, 'system/tenant', null, null, 1, 0, 0, null, 2,1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('menu:2:1', '租户管理', 'tenant','el-icon-setting', null, 'system/tenant/tenant', null, 'menu:2', 1, 0, 1, null, 200,1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('menu:2:2', '套餐管理', 'tenantPackage','el-icon-setting', null, 'system/tenant/package', null, 'menu:2', 1, 0, 1, null, 201,1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('menu:3', '系统监控', 'monitor','el-icon-setting', null, 'system/monitor', null, null, 1, 0, 0, null, 3,1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+       ('menu:3:1', '在线用户', 'online','el-icon-setting', null, 'system/monitor/online', null, 'menu:3', 1, 0, 1, null, 300,1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null);
 
 
 truncate table t_role_menu;
@@ -760,9 +722,9 @@ insert into t_role_menu values
 ('role_menu:6', 'role:super:admin', 'menu:1:5', 1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
 ('role_menu:7', 'role:super:admin', 'menu:1:6', 1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
 ('role_menu:8', 'role:super:admin', 'menu:1:7', 1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-('role_menu:9', 'role:super:admin', 'menu:1:8', 1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-('role_menu:10', 'role:super:admin', 'menu:1:8:1', 1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
-('role_menu:11', 'role:super:admin', 'menu:1:8:2', 1, null, null, 'user:super:admin', 'user:super:admin',0, '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+('role_menu:9', 'role:super:admin', 'menu:4', 1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+('role_menu:10', 'role:super:admin', 'menu:4:1', 1, null, null, 'user:super:admin', 'user:super:admin',0,'2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
+('role_menu:11', 'role:super:admin', 'menu:4:2', 1, null, null, 'user:super:admin', 'user:super:admin',0, '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
 ('role_menu:12', 'role:super:admin', 'menu:1:9', 1, null, null, 'user:super:admin', 'user:super:admin',0, '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
 ('role_menu:13', 'role:super:admin', 'menu:1:10', 1, null, null, 'user:super:admin', 'user:super:admin',0, '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),
 ('role_menu:14', 'role:super:admin', 'menu:2', 1, null, null, 'user:super:admin', 'user:super:admin',0, '2024-12-12 00:00:00', '2024-12-12 00:00:00', null),

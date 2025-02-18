@@ -1,9 +1,13 @@
 package com.vainglory.system.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.vainglory.common.mybatis.domain.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -15,9 +19,14 @@ public class Menu extends BaseEntity {
   private String id;
 
   /**
-   * 菜单名称
+   * 菜单名称（英文，主要是用来拼接路径所用）
    */
   private String name;
+
+  /**
+   * 菜单标题
+   */
+  private String title;
 
   /**
    * 菜单图标
@@ -48,7 +57,7 @@ public class Menu extends BaseEntity {
   /**
    * 在前端是否缓存 1缓存 0不缓存
    */
-  private String keepAlive;
+  private Integer keepAlive;
 
   /**
    * 是否为外链（1是 0否）
@@ -58,7 +67,7 @@ public class Menu extends BaseEntity {
   /**
    * 菜单类型,0目录 1菜单 2按钮
    */
-  private String type;
+  private Integer type;
 
   /**
    * 权限标识
@@ -70,4 +79,10 @@ public class Menu extends BaseEntity {
    * 显示排序
    */
   private Integer sort;
+
+  /*
+    子菜单
+   */
+//  @TableField(exist = false)
+//  private List<Menu> children;
 }

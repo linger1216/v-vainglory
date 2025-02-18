@@ -2,6 +2,8 @@ package com.vainglory.system.service;
 
 import com.vainglory.system.domain.Menu;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.vainglory.system.domain.dto.MenuResp;
+import com.vainglory.system.domain.dto.RouterResp;
 
 import java.util.List;
 
@@ -12,4 +14,5 @@ import java.util.List;
 */
 public interface IMenuService extends IService<Menu> {
   List<Menu> getMenusByRoleId(String roleId);
+  List<RouterResp> buildTrees(List<Menu> menus);
 }

@@ -13,6 +13,7 @@ import java.util.List;
 */
 public interface MenuMapper extends BaseMapper<Menu> {
   List<Menu> getMenusByRoleId(String roleId);
+  List<Menu> getMenusByUserId(String userId);
 }
 
 

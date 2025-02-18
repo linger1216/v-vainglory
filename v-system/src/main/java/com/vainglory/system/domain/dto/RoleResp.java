@@ -1,9 +1,7 @@
 package com.vainglory.system.domain.dto;
 
 import com.vainglory.common.mybatis.domain.dto.BaseResp;
-import com.vainglory.system.domain.Menu;
 import com.vainglory.system.domain.Role;
-import com.vainglory.system.domain.User;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 
@@ -27,7 +25,7 @@ public class RoleResp extends BaseResp {
   /**
    * 角色关联的菜单
    */
-  private List<Menu> menus;
+  private List<RouterResp> routers;
 
   /**
    * 角色关联的Api
