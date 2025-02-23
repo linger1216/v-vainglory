@@ -5,10 +5,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.vainglory.common.core.utils.StringUtils;
 import com.vainglory.system.constant.MenuConstant;
 import com.vainglory.system.domain.Menu;
-import com.vainglory.system.domain.dto.MenuResp;
 import com.vainglory.system.domain.dto.MetaResp;
 import com.vainglory.system.domain.dto.RouterResp;
-import com.vainglory.system.enums.MenuType;
 import com.vainglory.system.service.IMenuService;
 import com.vainglory.system.mapper.MenuMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +32,12 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu>
   @Override
   public List<Menu> getMenusByRoleId(String roleId) {
     List<Menu> menus = menuMapper.getMenusByRoleId(roleId);
+    return menus;
+  }
+
+  @Override
+  public List<Menu> getMenusByUserId(String userId) {
+    List<Menu> menus = menuMapper.getMenusByUserId(userId);
     return menus;
   }
 
