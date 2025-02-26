@@ -2,33 +2,34 @@ package com.vainglory.utils.login;
 
 import cn.hutool.core.lang.UUID;
 import com.vainglory.properties.login.JwtProperties;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwsHeader;
-import io.jsonwebtoken.Jwts;
+import com.vainglory.utils.StringUtils;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecureDigestAlgorithm;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.util.Date;
-import java.util.Objects;
 import javax.crypto.SecretKey;
 
+// https://developer.aliyun.com/article/1489264
+
+@Data
 @Component
 @EnableConfigurationProperties(JwtProperties.class)
 public class JwtUtils {
 
+
   private final SecretKey SECRET_KEY;
+  private static final String DEFAULT_TOKEN_NAME = "Authorization";
+  private static final int DEFAULT_ACCESS_EXPIRE_SECONDS = 21600;
 
-  public static final int DEFAULT_ACCESS_EXPIRE_SECONDS = 21600;
-
-  /**
-   * 默认过期时间(单位:秒) 值为 6小时
-   */
-  private long EXPIRE;
+  private String tokenName;
+  private String secretKey;
+  private int timeout;
 
   /**
    * 加密算法
@@ -37,10 +38,14 @@ public class JwtUtils {
 
   public JwtUtils(@Autowired JwtProperties jwtProperties) {
     this.SECRET_KEY = Keys.hmacShaKeyFor(jwtProperties.getJwtSecretKey().getBytes());
-    if (jwtProperties.getTimeout() == 0) {
-      jwtProperties.setTimeout(DEFAULT_ACCESS_EXPIRE_SECONDS);
+    this.timeout = (int) jwtProperties.getTimeout();
+    this.tokenName = jwtProperties.getTokenName();
+    if (this.timeout == 0) {
+      this.timeout = DEFAULT_ACCESS_EXPIRE_SECONDS;
     }
-    this.EXPIRE = jwtProperties.getTimeout();
+    if (StringUtils.isEmpty(this.tokenName)) {
+      this.tokenName = DEFAULT_TOKEN_NAME;
+    }
   }
 
   /**
@@ -65,7 +70,7 @@ public class JwtUtils {
    */
   public String genAccessToken(String userId) {
     String uuid = UUID.randomUUID().toString();
-    Date exprireDate = Date.from(Instant.now().plusSeconds(this.EXPIRE));
+    Date exprireDate = Date.from(Instant.now().plusSeconds(this.getTimeout()));
     return Jwts.builder()
       // 设置头部信息header
       .header()
@@ -108,5 +113,17 @@ public class JwtUtils {
 
   public Claims parsePayload(String token) {
     return parseClaim(token).getPayload();
+  }
+
+
+  public Claims validateToken(String token) {
+    try {
+      Jws<Claims> claimsJws = Jwts.parser().verifyWith(SECRET_KEY).build()
+        .parseSignedClaims(token);
+      //OK, we can trust this JWT
+      return claimsJws.getPayload();
+    } catch (JwtException e) {
+      throw e;
+    }
   }
 }

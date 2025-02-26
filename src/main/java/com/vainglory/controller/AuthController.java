@@ -102,7 +102,8 @@ public class AuthController {
 
     // 生成token
     String token = jwtUtils.genAccessToken(user.getId());
-    Claims claims = jwtUtils.parsePayload(token);
+    Claims claims = jwtUtils.validateToken(token);
+//    jwtUtils.parsePayload(token);
     Date expiration = claims.getExpiration();
     int expireInSeconds = (int) ((expiration.getTime() - System.currentTimeMillis()) / 1000);
     LoginResp ret = new LoginResp();

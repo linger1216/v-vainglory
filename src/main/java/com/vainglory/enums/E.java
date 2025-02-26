@@ -14,6 +14,7 @@ public enum E implements IErrorCode {
   invalid_user_or_password(-1001, "用户名密码错误"),
   no_authorization(-1002, "用户未授权"),
   client_token_not_match(-1003, "客户端ID与Token不匹配"),
+  invalid_token(-1002, "用户未授权"),
 
   invalid_captcha(-1601, "验证码错误"),
   no_user(-1602, "没有此用户"),
