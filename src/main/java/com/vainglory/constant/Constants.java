@@ -17,6 +17,8 @@ public interface Constants {
   Integer MENU_TYPE_MENU = 1;
   Integer MENU_TYPE_BUTTON = 2;
 
+  Integer API_ACCESS_PUBLIC = 1;
+  Integer API_ACCESS_PRIVATE = 0;
 
   String LOGIN_VALID_SERVICE = "LoginValidService";
 }

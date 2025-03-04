@@ -118,3 +118,13 @@ security:
   # 排除路径
   excludes:
     - /auth
+
+
+
+casbin:
+  enable-casbin: true
+  store-type: jdbc
+  table-name: casbin_rule
+  initialize-schema: create
+  model: classpath:casbin/model.conf
+

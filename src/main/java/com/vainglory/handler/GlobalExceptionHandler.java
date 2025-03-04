@@ -3,6 +3,7 @@ package com.vainglory.handler;
 import com.vainglory.constant.Constants;
 import com.vainglory.domain.R;
 import com.vainglory.exception.BaseException;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,12 @@ import java.util.List;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+
+  GlobalExceptionHandler() {
+    log.info("初始化全局异常处理器");
+  }
+
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   @ExceptionHandler(value = Exception.class)
   public Object exceptionHandler(Exception e) {
@@ -52,15 +59,15 @@ public class GlobalExceptionHandler {
 //    return R.F(ResponseEnum.RC1005);
 //  }
 //
-//  @ResponseStatus(HttpStatus.BAD_REQUEST)
-//  @ExceptionHandler(BindException.class)
-//  public Object validExceptionHandler(BindException e) {
-//    log.error("方法参数绑定错误(实体对象传参)", e);
-//    return R.F(ResponseEnum.RC1006);
-//  }
-//
 
-  //
+
+  @ResponseStatus(HttpStatus.UNAUTHORIZED)
+  @ExceptionHandler(ExpiredJwtException.class)
+  public Object validExceptionHandler(ExpiredJwtException e) {
+    return R.F(HttpStatus.UNAUTHORIZED.value(), e.toString());
+  }
+
+
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ExceptionHandler(ConstraintViolationException.class)
   public Object validConstraintViolationExceptionHandler(ConstraintViolationException e) {

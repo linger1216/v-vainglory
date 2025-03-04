@@ -60,6 +60,17 @@
 
 	<dependencies>
 
+    <!--casbin 权限控制-->
+    <!-- https://mvnrepository.com/artifact/org.casbin/casbin-spring-boot-starter -->
+    <dependency>
+      <groupId>org.casbin</groupId>
+      <artifactId>casbin-spring-boot-starter</artifactId>
+      <version>1.8.0</version>
+    </dependency>
+
+
+
+
 		<!-- 解决mac m1 io.netty.resolver.dns.macos.MacOSDnsServerAddressStreamProvider 问题 -->
 <!--		<dependency>-->
 <!--			<groupId>io.netty</groupId>-->
@@ -220,14 +231,6 @@
 			<artifactId>swagger-annotations</artifactId>
 			<version>2.2.28</version>
 		</dependency>
-
-		<!-- swagger-models -->
-		<dependency>
-			<groupId>io.swagger.core.v3</groupId>
-			<artifactId>swagger-models</artifactId>
-			<version>2.2.28</version>
-		</dependency>
-
 
 
 	</dependencies>

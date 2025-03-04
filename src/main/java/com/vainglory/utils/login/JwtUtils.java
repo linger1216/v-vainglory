@@ -1,7 +1,7 @@
 package com.vainglory.utils.login;
 
 import cn.hutool.core.lang.UUID;
-import com.vainglory.properties.login.JwtProperties;
+import com.vainglory.properties.security.JwtProperties;
 import com.vainglory.utils.StringUtils;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -80,7 +80,7 @@ public class JwtUtils {
       // 设置自定义负载信息payload
       .claim("userId", userId)
       // 令牌ID
-      .id(UUID.randomUUID().toString())
+      .id(uuid)
       // 过期日期
       .expiration(exprireDate)
       // 签发时间

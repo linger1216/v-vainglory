@@ -1,4 +1,4 @@
-package com.vainglory.properties.login;
+package com.vainglory.properties.security;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

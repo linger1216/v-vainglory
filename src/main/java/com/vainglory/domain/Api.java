@@ -3,6 +3,7 @@ package com.vainglory.domain;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
